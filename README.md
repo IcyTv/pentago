@@ -1,0 +1,2 @@
+# pentago
+Pentago school project
