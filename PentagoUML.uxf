@@ -28,8 +28,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>77</x>
-      <y>210</y>
+      <x>168</x>
+      <y>140</y>
       <w>357</w>
       <h>133</h>
     </coordinates>
@@ -40,14 +40,14 @@
 #board: Board
 --
 +Player(name: String, color: core.Constants.COLOR, board: Board)
-/+playRound(turn: Turn):void/</panel_attributes>
++playRound(turn: Turn):void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>63</x>
-      <y>364</y>
+      <x>154</x>
+      <y>294</y>
       <w>315</w>
       <h>133</h>
     </coordinates>
@@ -62,8 +62,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>63</x>
-      <y>539</y>
+      <x>154</x>
+      <y>469</y>
       <w>266</w>
       <h>133</h>
     </coordinates>
@@ -71,28 +71,27 @@
 --
 -strategy: Strategy
 --
-+Computer(name: String, color: c.c.COLOR, board: Board)
-+playRound(turn: Turn): void
-+getTurn():Turn</panel_attributes>
++Computer(name: String, color: c.c.COLOR, board: Board, difficulty: int)
++playRound(): void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>539</x>
-      <y>497</y>
+      <x>630</x>
+      <y>427</y>
       <w>189</w>
       <h>140</h>
     </coordinates>
     <panel_attributes>Board
 --
 -panels: Panel[][]
--done: boolean
+-won: boolean
 -winner: Player
 -size: int
 --
 +Board(size:int)
-+isDone(): boolean
++isWon(): boolean
 +getWinner(): Player
 +set(x:int, y: int, piece:Piece): void
 +get(x:int, y:int): Piece
@@ -102,8 +101,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>350</x>
-      <y>581</y>
+      <x>441</x>
+      <y>511</y>
       <w>168</w>
       <h>105</h>
     </coordinates>
@@ -122,8 +121,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>518</x>
-      <y>245</y>
+      <x>609</x>
+      <y>175</y>
       <w>245</w>
       <h>84</h>
     </coordinates>
@@ -141,8 +140,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>154</x>
-      <y>336</y>
+      <x>245</x>
+      <y>266</y>
       <w>245</w>
       <h>217</h>
     </coordinates>
@@ -152,8 +151,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>427</x>
-      <y>231</y>
+      <x>518</x>
+      <y>161</y>
       <w>105</w>
       <h>49</h>
     </coordinates>
@@ -163,26 +162,27 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>875</x>
-      <y>301</y>
+      <x>966</x>
+      <y>231</y>
       <w>343</w>
       <h>133</h>
     </coordinates>
     <panel_attributes>Gamemaster
 --
--players: Player[]
 -board: Board
 --
-$getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
-+playRound(turn: Turn, currentPlayer: int, isComputer: boolean): void
++Gamemaster(boardSize: int, panelSize: int)
+$getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
++playRound(turn: Turn): void
++generatePlayer(name: String, color: core.Constants.COLOR, computer: boolean): void
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>427</x>
-      <y>210</y>
+      <x>518</x>
+      <y>140</y>
       <w>462</w>
       <h>126</h>
     </coordinates>
@@ -192,8 +192,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>672</x>
-      <y>329</y>
+      <x>763</x>
+      <y>259</y>
       <w>217</w>
       <h>182</h>
     </coordinates>
@@ -203,8 +203,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>469</x>
-      <y>511</y>
+      <x>560</x>
+      <y>441</y>
       <w>84</w>
       <h>84</h>
     </coordinates>
@@ -214,8 +214,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>336</x>
-      <y>301</y>
+      <x>427</x>
+      <y>231</y>
       <w>196</w>
       <h>315</h>
     </coordinates>
@@ -225,8 +225,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>427</x>
-      <y>245</y>
+      <x>518</x>
+      <y>175</y>
       <w>105</w>
       <h>56</h>
     </coordinates>
@@ -236,8 +236,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>35</x>
-      <y>252</y>
+      <x>126</x>
+      <y>182</y>
       <w>518</w>
       <h>455</h>
     </coordinates>
@@ -247,8 +247,8 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>147</x>
-      <y>336</y>
+      <x>238</x>
+      <y>266</y>
       <w>21</w>
       <h>42</h>
     </coordinates>
@@ -258,29 +258,34 @@ $getSpielzug(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spiel
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>63</x>
-      <y>707</y>
-      <w>210</w>
-      <h>84</h>
+      <x>154</x>
+      <y>637</y>
+      <w>266</w>
+      <h>175</h>
     </coordinates>
     <panel_attributes>Strategy
 --
-$DIFFICULTY: int
+-difficulty: int
 -board: Board
 -computer: Computer
 --
-+Strategy(board: Board, computer: Computer)
++Strategy(board: Board, computer: Computer, int: difficulty)
 +findBestTurn(): Turn
++findBestTurnEasy(): Turn
++findBestTurnMedium(): Turn
++findBestTurnHard(): Turn
 
-
-</panel_attributes>
+-findChips(): int[]
+-findChipsAbove(): int
+-findChipsTopLeft(): int
+...</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>847</x>
-      <y>77</y>
+      <x>938</x>
+      <y>7</y>
       <w>280</w>
       <h>105</h>
     </coordinates>
@@ -299,8 +304,8 @@ $DIFFICULTY: int
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>0</x>
-      <y>553</y>
+      <x>91</x>
+      <y>483</y>
       <w>77</w>
       <h>175</h>
     </coordinates>
@@ -310,22 +315,24 @@ $DIFFICULTY: int
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1645</x>
-      <y>378</y>
+      <x>1736</x>
+      <y>308</y>
       <w>112</w>
-      <h>42</h>
+      <h>70</h>
     </coordinates>
     <panel_attributes>View
 --
-
-to be continued...</panel_attributes>
++View()
++init():void
++tickGame():void
++tickMenu():void</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1365</x>
-      <y>357</y>
+      <x>1456</x>
+      <y>287</y>
       <w>161</w>
       <h>77</h>
     </coordinates>
@@ -341,8 +348,8 @@ to be continued...</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1211</x>
-      <y>378</y>
+      <x>1302</x>
+      <y>308</y>
       <w>168</w>
       <h>21</h>
     </coordinates>
@@ -352,12 +359,90 @@ to be continued...</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1519</x>
-      <y>385</y>
+      <x>1610</x>
+      <y>315</y>
       <w>140</w>
       <h>21</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>180.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>679</x>
+      <y>0</y>
+      <w>126</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>Queue
+--
+-currPlayer: Player
+--
++Queue()
++getCurrPlayer(): Player
++add(p: Player): void
++next(): Player</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>798</x>
+      <y>63</y>
+      <w>196</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>260.0;240.0;260.0;90.0;130.0;90.0;130.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>371</x>
+      <y>28</y>
+      <w>322</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;160.0;10.0;10.0;440.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1673</x>
+      <y>91</y>
+      <w>231</w>
+      <h>182</h>
+    </coordinates>
+    <panel_attributes>Scene
+--
+-entities: List&lt;Entity&gt;
+-lights: List&lt;Light&gt;
+-camera: Camera
+-picker: MousePicker
+-renderer: MasterRenderer
+-tickrate: int
+--
++Scene()
+/+init():void/
+/+tickGame():void/
+/+tickMenu():void/
++start(): void
++cleanUp():void
+#sync(starttime: float, tick:int): void
+#render():void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1820</x>
+      <y>266</y>
+      <w>21</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
   </element>
 </diagram>
