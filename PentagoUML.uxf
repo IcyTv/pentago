@@ -28,7 +28,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>168</x>
+      <x>77</x>
       <y>140</y>
       <w>357</w>
       <h>133</h>
@@ -46,7 +46,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>154</x>
+      <x>63</x>
       <y>294</y>
       <w>315</w>
       <h>133</h>
@@ -62,7 +62,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>154</x>
+      <x>63</x>
       <y>469</y>
       <w>266</w>
       <h>133</h>
@@ -78,7 +78,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>630</x>
+      <x>539</x>
       <y>427</y>
       <w>189</w>
       <h>140</h>
@@ -101,7 +101,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>441</x>
+      <x>350</x>
       <y>511</y>
       <w>168</w>
       <h>105</h>
@@ -121,7 +121,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>609</x>
+      <x>518</x>
       <y>175</y>
       <w>245</w>
       <h>84</h>
@@ -140,7 +140,7 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>245</x>
+      <x>154</x>
       <y>266</y>
       <w>245</w>
       <h>217</h>
@@ -151,7 +151,7 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
+      <x>427</x>
       <y>161</y>
       <w>105</w>
       <h>49</h>
@@ -162,7 +162,7 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>966</x>
+      <x>875</x>
       <y>231</y>
       <w>343</w>
       <h>133</h>
@@ -170,6 +170,7 @@
     <panel_attributes>Gamemaster
 --
 -board: Board
+-queue: Queue
 --
 +Gamemaster(boardSize: int, panelSize: int)
 $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
@@ -181,7 +182,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
+      <x>427</x>
       <y>140</y>
       <w>462</w>
       <h>126</h>
@@ -192,7 +193,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>763</x>
+      <x>672</x>
       <y>259</y>
       <w>217</w>
       <h>182</h>
@@ -203,7 +204,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>560</x>
+      <x>469</x>
       <y>441</y>
       <w>84</w>
       <h>84</h>
@@ -214,7 +215,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>427</x>
+      <x>336</x>
       <y>231</y>
       <w>196</w>
       <h>315</h>
@@ -225,7 +226,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>518</x>
+      <x>427</x>
       <y>175</y>
       <w>105</w>
       <h>56</h>
@@ -236,7 +237,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>126</x>
+      <x>35</x>
       <y>182</y>
       <w>518</w>
       <h>455</h>
@@ -247,7 +248,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>238</x>
+      <x>147</x>
       <y>266</y>
       <w>21</w>
       <h>42</h>
@@ -258,7 +259,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>154</x>
+      <x>63</x>
       <y>637</y>
       <w>266</w>
       <h>175</h>
@@ -284,7 +285,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>938</x>
+      <x>847</x>
       <y>7</y>
       <w>280</w>
       <h>105</h>
@@ -295,7 +296,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
 -rotatePosition: int[]
 -rotateDirection: boolean
 --
-+Spielzug(pieceX:int, pieceY:int, rotX:int, rotY:int, dir:boolean)
++Turn(pieceX:int, pieceY:int, rotX:int, rotY:int, dir:boolean)
 +getPiecePosition(): int[]
 +getRotatePosition(): int[]
 +getRotateDirection(): boolean</panel_attributes>
@@ -304,7 +305,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>91</x>
+      <x>0</x>
       <y>483</y>
       <w>77</w>
       <h>175</h>
@@ -315,7 +316,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1736</x>
+      <x>1645</x>
       <y>308</y>
       <w>112</w>
       <h>70</h>
@@ -331,7 +332,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1456</x>
+      <x>1365</x>
       <y>287</y>
       <w>161</w>
       <h>77</h>
@@ -348,7 +349,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1302</x>
+      <x>1211</x>
       <y>308</y>
       <w>168</w>
       <h>21</h>
@@ -359,7 +360,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1610</x>
+      <x>1519</x>
       <y>315</y>
       <w>140</w>
       <h>21</h>
@@ -370,7 +371,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>679</x>
+      <x>588</x>
       <y>0</y>
       <w>126</w>
       <h>84</h>
@@ -388,7 +389,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>798</x>
+      <x>707</x>
       <y>63</y>
       <w>196</w>
       <h>182</h>
@@ -399,7 +400,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>371</x>
+      <x>280</x>
       <y>28</y>
       <w>322</w>
       <h>126</h>
@@ -410,7 +411,7 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1673</x>
+      <x>1582</x>
       <y>91</y>
       <w>231</w>
       <h>182</h>
@@ -437,12 +438,34 @@ $getTurn(pieceX: int, pieceY: int, rotX: int, rotY: int, dir:boolean): Spielzug
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1820</x>
+      <x>1729</x>
       <y>266</y>
       <w>21</w>
       <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>322</x>
+      <y>560</y>
+      <w>245</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>330.0;10.0;330.0;150.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1519</x>
+      <y>336</y>
+      <w>140</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
