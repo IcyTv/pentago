@@ -1,22 +1,22 @@
+ 
+
+import java.awt.Color;
 
 public class Piece {
 
-	public static String[] PIECE_TYPES = new String[] {"*", "+", "~", "#"};
-	private static int counter = 0;
-	
-	private String symbol;
-	
-	public Piece() {
-		symbol = getType();
-		
-	}
-	
-	public String toString() {
-		return symbol;
-	}
-	
-	
-	public static String getType() {
-		return PIECE_TYPES[counter++];
-	}
+    private Color color;
+    private Player player;
+    
+    public Piece (Player player, Color color) {
+       this.player = player;
+       this.color = color;
+    }
+    
+    public Player getPlayer() {
+       return player;
+    }
+    
+    public Color getColor() {
+        return color;
+    }
 }

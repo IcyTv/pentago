@@ -1,76 +1,52 @@
+ 
+
 
 public class Board {
-	
-	Matrix[] matrices;
-	int size;
-	
-	/**
-	 * 
-	 * @param s Board size
-	 * @param ps Piece size MUST be factor of boardSize
-	 */
-	
-	public Board(int s, int ps) {
-		this.size = s;
-		matrices = new Matrix[s*s];
-		for(int i = 0; i < s * s; i++) {
-			matrices[i] = Matrix.getEmptyMatrix(ps);
-		}
-	}
-	
-	public Board(int s) {
-		this(s, 3);
-	}
-	
-	public Board() {
-		this(3,3);
-	}
-	
-	
-	public void set(int x, int y, Piece p) throws Exception {
-		int psize = matrices[0].size();
-		int mx = x / psize;
-		int my = y / psize;
-		
-		//System.out.println(x - mx * psize + " " + (y - my * psize));
-		
-		matrices[my * size + mx].set(x - mx * psize, y - my * psize, p);
-	}
-	
-	public boolean isDone() {
-		return false;
-	}
-	
-	public String toString() {
-		String ret = "";
-		
-		String[] rows = new String[this.size * matrices[0].size()];
-		
-		for(int i = 0; i < this.size * matrices[0].size(); i++) {
-			String tmp = "";
-			for(int j= 0; j < this.size; j++) {
-				tmp += matrices[i/matrices[0].size()*this.size + j].getLine(i%matrices[0].size());
-				//System.out.println(i%matrices[0].size());
-			}
-			rows[i] = tmp;
-		}
-		
-		for(String r: rows) {
-			ret += r + "\n";
-		}
-		
-		//System.out.println(matrices[0]);
-		
-		return ret;
-	}
 
-	public void turn(int x, int y, boolean dirb) {
-		if(dirb) {
-			matrices[y * this.size + x].rotateLeft();
-		} else {
-			matrices[y * this.size + x].rotateRight();
-		}
-		
-	}
-	
+    private Panel[][] panels;
+    private boolean done;
+    private Player winner;
+    private int bSize;
+    
+    public Board(int bSize, int pSize) {
+        if (bSize%pSize!=0) System.out.println("bSize muss durch pSize teilbar sein!");
+        this.bSize = bSize;
+        done = false;
+        winner = null;
+        
+        panels = new Panel[bSize/pSize][bSize/pSize];
+        for (int x = 0; x< bSize/pSize; x++) {
+            for (int y = 0; y< bSize/pSize; y++) {
+                panels[x][y] = new Panel(pSize);
+            }
+        }
+        displayBoard();
+    }
+    
+    public void set(int x, int y, Piece piece) {
+       int size = panels[0][0].getSize();
+       panels[x/size][y/size].set(x%size, y%size, piece);
+    }
+    
+    public Piece get(int x, int y) {
+       int size = panels[0][0].getSize();
+       return panels[x/size][y/size].get(x%size, y%size);
+    }
+    
+    public void rotate(int x, int y, boolean dir) {
+        panels[x][y].rotate(dir);
+    }
+    
+    public void displayBoard() {
+        System.out.println("");
+        for (int y = 0; y<bSize; y++) {
+            for (int x = 0; x<panels.length; x++) {
+                panels[x][y/panels.length].displayLine(y%panels.length);
+            }
+            System.out.println("");
+        }
+        System.out.println("");
+        
+    }
+    
 }
