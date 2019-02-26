@@ -8,10 +8,10 @@ public class Gamemaster {
     Scanner s;
     Queue queue;
     
-    public Gamemaster(int nPlayers, int bSize, int pSize) {
+    public Gamemaster(int bSize, int pSize) {
         board = new Board(bSize, pSize);
         queue = new Queue();
-        queue.add(new Human("Hans", Color.RED, board));
+        //queue.add(new Human("Hans", Color.RED, board));
         //players = new Player[nPlayers];
         //s = new Scanner(System.in);
         
@@ -37,9 +37,24 @@ public class Gamemaster {
         Turn testturn = new Turn(pX,pY,rX,rY, dir);
         queue.next().playRound(testturn);
     }
-    
-    public Turn getTurn(int pieceX, int pieceY, int rotX, int rotY, boolean dir) {
-        return new Turn(pieceX, pieceY, rotX, rotY, dir);
+
+    public void addPlayer(Player player){
+        queue.add(player);
     }
 
+    public Player generatePlayer(String name, Color color, boolean computer){
+        if(computer){
+            return new Computer(name, color, board);
+        } else {
+            return new Human(name, color, board);
+        }
+    }
+
+
+
+    //********STATIC METHODS********//
+
+    public static Turn getTurn(int pieceX, int pieceY, int rotX, int rotY, boolean dir) {
+        return new Turn(pieceX, pieceY, rotX, rotY, dir);
+    }
 }
