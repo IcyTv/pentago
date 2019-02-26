@@ -19,4 +19,10 @@ public class Piece {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(color.getRed());
+    }
+    
 }

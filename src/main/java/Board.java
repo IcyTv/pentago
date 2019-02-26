@@ -20,7 +20,6 @@ public class Board {
                 panels[x][y] = new Panel(pSize);
             }
         }
-        displayBoard();
     }
     
     public void set(int x, int y, Piece piece) {
@@ -37,16 +36,16 @@ public class Board {
         panels[x][y].rotate(dir);
     }
     
-    public void displayBoard() {
-        System.out.println("");
-        for (int y = 0; y<bSize; y++) {
-            for (int x = 0; x<panels.length; x++) {
-                panels[x][y/panels.length].displayLine(y%panels.length);
+    @Override
+    public String toString() {
+        String ret = "";
+        for (int i = 0; i < bSize; i++) {
+            for (int n = 0; n < bSize; n++) {
+                ret += get(i, n) + " ";
             }
-            System.out.println("");
+            ret += "\n";
         }
-        System.out.println("");
-        
+        return ret;
     }
     
 }

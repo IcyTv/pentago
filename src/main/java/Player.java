@@ -22,14 +22,10 @@ public abstract class Player {
         int pY = turn.getPiecePosition()[1];
         board.set(pX, pY, piece);
         
-        board.displayBoard();
-        
         int rX = turn.getRotatePosition()[0];
         int rY = turn.getRotatePosition()[1];
         boolean dir = turn.getRotateDirection();
         board.rotate(rX, rY, dir);
-        
-        board.displayBoard();
     }
     
     public Color getColor() {

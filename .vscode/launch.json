@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Tester",
+            "request": "launch",
+            "mainClass": "Tester",
+            "projectName": "pentago"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Testing",
+            "request": "launch",
+            "mainClass": "Testing",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

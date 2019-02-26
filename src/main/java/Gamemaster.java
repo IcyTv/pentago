@@ -33,9 +33,15 @@ public class Gamemaster {
         
     }
     
-    public void lasseRundeSpielen(int pX, int pY, int rX, int rY, boolean dir) {
-        Turn testturn = new Turn(pX,pY,rX,rY, dir);
+    public void playRound(int pX, int pY, int rX, int rY, boolean dir) {
+        Turn testturn = new Turn(pX,pY,rX,rY, dir, board);
         queue.next().playRound(testturn);
+        System.out.println(this);
+    }
+
+    public void playRound(Turn turn){
+        queue.next().playRound(turn);
+        System.out.println(this);
     }
 
     public void addPlayer(Player player){
@@ -50,11 +56,18 @@ public class Gamemaster {
         }
     }
 
+    public Board getBoard(){
+        return board;
+    }
 
+    @Override
+    public String toString() {
+        return board.toString();
+    }
 
     //********STATIC METHODS********//
 
-    public static Turn getTurn(int pieceX, int pieceY, int rotX, int rotY, boolean dir) {
-        return new Turn(pieceX, pieceY, rotX, rotY, dir);
+    public static Turn getTurn(int pieceX, int pieceY, int rotX, int rotY, boolean dir, Board board) {
+        return new Turn(pieceX, pieceY, rotX, rotY, dir, board);
     }
 }
