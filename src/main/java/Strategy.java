@@ -1,16 +1,14 @@
 import java.util.Random;
 
-public class Strategy
-{
+public class Strategy {
     private Random r;
-    
-    public Strategy()
-    {
+
+    public Strategy() {
         this.r = new Random();
     }
-    
-    /**Gibt bisher nur einen Dummy-Turn zurueck**/
+
+    /** Gibt bisher nur einen Dummy-Turn zurueck **/
     public Turn findBestTurn() {
-        return new Turn(0,0,0,0,true, new Board(0, 0));
+        return new Turn(0, 0, 0, 0, true, null);
     }
 }
