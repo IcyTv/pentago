@@ -8,12 +8,13 @@ public abstract class Player {
     protected String name;
     protected Board board;
     protected Color color;      //muss durch core.Constants.COLOR ersetzt werden
-    protected Player nextPlayer;
+    protected boolean human;
     
-    public Player(String name, Color color, Board board) { 
+    public Player(String name, Color color, Board board, boolean human) { 
         this.board = board;
         this.name = name;
         this.color = color;
+        this.human = human;
         piece = new Piece(this, color);
     }
     
@@ -36,11 +37,13 @@ public abstract class Player {
        return name;
     }
     
-    public Player getNextPlayer() {
-        return nextPlayer;
+    public boolean isHuman()
+    {
+    	return this.human;
     }
     
-    public void setNextPlayer(Player p) {
-        nextPlayer = p;
+    public Piece getPiece()
+    {
+    	return this.piece;
     }
 }

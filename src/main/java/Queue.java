@@ -1,45 +1,40 @@
 
 public class Queue {
-    private Player currPlayer;
-    private Player lastPlayer;
+    private Node current;
+    private Node first;
+    private Gamemaster gm;
     
-    public Queue() {
-        currPlayer = null;
-        lastPlayer = null;
+    public Queue(Gamemaster gm) {
+    	this.gm     = gm;
+        current = null;
+        first   = null;
     }
     
-    public void add(Player p) {
-        /*if (currPlayer == null) {
-            currPlayer = p;
-            currPlayer.setNextPlayer(currPlayer);
-        }
-        else {
-            currPlayer.add(p, currPlayer);
-        }*/
-        
-        
-        if (currPlayer == null) {
-            currPlayer = p;
-            lastPlayer = p;
-            currPlayer.setNextPlayer(currPlayer);
-        }
-        else {
-            lastPlayer.setNextPlayer(p);
-            p.setNextPlayer(currPlayer);
-            lastPlayer = p;
-        }
+    public Player getCurrentP()
+    {
+    	return current.getPlayer();
     }
     
-    public Player next() {
-        if (currPlayer == null) {
-            return null;
-        }
-        else {
-            Player next = currPlayer;
-            lastPlayer = currPlayer;
-            currPlayer = currPlayer.getNextPlayer();
-            return next;
-        }
-        
+    public Node getFirstNode()
+    {
+    	return first;
+    }
+    
+    public void enqueue(Player p)
+    {
+    	if (first == null)
+    	{
+    		first = new Node(p);
+    		current = first;
+    	}
+    	else
+    	{
+    		first.enqueue(first, p, gm.getAmountOfPlayers(), 1);
+    	}
+    }
+    
+    public void nextPlayer()
+    {
+    	current = current.getNext();
     }
 }

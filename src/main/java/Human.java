@@ -4,7 +4,7 @@ public class Human extends Player
    
     public Human(String name, Color color, Board board)
     {
-        super(name, color, board);
+        super(name, color, board, true);
         
     }
     

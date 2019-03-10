@@ -4,7 +4,7 @@ public class Computer extends Player
 {
     Strategy strategy;
     public Computer(String name, Color color, Board board) {
-        super(name, color, board);
+        super(name, color, board, false);
         strategy = new Strategy();
     }
     

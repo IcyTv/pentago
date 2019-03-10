@@ -1,51 +1,241 @@
  import java.awt.Color;
- import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Gamemaster {
     
-    //private Player[] players;
+	private int   amountOfPlayers;
     private Board board;
-    Scanner s;
-    Queue queue;
+    private Queue queue;
     
-    public Gamemaster(int bSize, int pSize) {
-        board = new Board(bSize, pSize);
-        queue = new Queue();
-        //queue.add(new Human("Hans", Color.RED, board));
-        //players = new Player[nPlayers];
-        //s = new Scanner(System.in);
+    public Gamemaster(int bSize, int pSize, int amountOfPlayers) {
+    	this.amountOfPlayers = amountOfPlayers;
+    	
+    	Scanner s = new Scanner(System.in);
+        board = new Board(bSize, pSize, this);
+        queue = new Queue(this);
+        loadPlayers(s);
         
-        /*for (int i = 0; i<players.length; i++) {
-            System.out.println("Namen eingeben: ");
-            String name = s.next();
-            System.out.println("Ist der Spieler ein Mensch? (true oder false)");
-            boolean mensch = Boolean.parseBoolean(s.next());
-            System.out.println("Zahl zwischen 0 (inklusiv) und 10 (exklusiv) eingeben: ");
-            int n = Integer.parseInt(s.next());
-            Colorpicker picker = new Colorpicker(n);
-            Color color = picker.getColor();
-            
-            if (mensch) players[i] = new Human(name, color, board);
-            else players[i] = new Computer(name, color, board);
-            
-        }*/
+        for (int i = 0; i < amountOfPlayers-1; i++)
+        {
+        	queue.nextPlayer();
+        }
         
-        
+        while (!board.won(queue.getCurrentP()))
+        {
+        	queue.nextPlayer();
+        	if (queue.getCurrentP().isHuman())
+        	{
+        		printBoard();
+        		Human human = (Human) queue.getCurrentP();
+        		human.playRound(getTurn(this.getPieceX(s), this.getPieceY(s), this.getRotateX(s), this.getRotateY(s), this.getRotateDirection(s), board));
+        	}
+        	else
+        	{
+        		Computer computer = (Computer) queue.getCurrentP();
+        		computer.playRound();
+        	}
+        }
+        s.close();
     }
     
-    public void playRound(int pX, int pY, int rX, int rY, boolean dir) {
-        Turn testturn = new Turn(pX,pY,rX,rY, dir, board);
-        queue.next().playRound(testturn);
-        System.out.println(this);
+    private int getPieceX(Scanner s)
+    {
+    	try
+    	{
+    		System.out.println(queue.getCurrentP().getName() + ": In welcher Zeile soll der zu setzende Stein liegen?");
+    		int x = s.nextInt()-1;
+    		
+    		if (x < 0 || x > 8)
+    		{
+    			System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+        		s.nextLine();
+        		return getPieceX(s);
+    		}
+    		else
+    		{
+    			return x;
+    		}
+    	} catch (InputMismatchException e) {
+    		System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+    		s.nextLine();
+    		return getPieceX(s);
+    	}
+    }
+    
+    private int getPieceY(Scanner s)
+    {
+    	try
+    	{
+    		System.out.println(queue.getCurrentP().getName() + ": In welcher Spalte soll der zu setzende Stein liegen?");
+    		int y = s.nextInt()-1;
+    		
+    		if (y < 0 || y > 8)
+    		{
+    			System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+        		s.nextLine();
+        		return getPieceY(s);
+    		}
+    		else
+    		{
+    			return y;
+    		}
+    	} catch (InputMismatchException e) {
+    		System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+    		s.nextLine();
+    		return getPieceY(s);
+    	}
+    }
+    
+    private int getRotateX(Scanner s)
+    {
+    	try
+    	{
+    		System.out.println(queue.getCurrentP().getName() + ": In welcher Spalte liegt das zu drehende Panel?");
+    		int x = s.nextInt()-1;
+    		
+    		if (x < 0 || x > 2)
+    		{
+    			System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+        		s.nextLine();
+        		return getRotateX(s);
+    		}
+    		else
+    		{
+    			return x;
+    		}
+    	} catch (InputMismatchException e) {
+    		System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+    		s.nextLine();
+    		return getRotateX(s);
+    	}
+    }
+    
+    private int getRotateY(Scanner s)
+    {
+    	try
+    	{
+    		System.out.println(queue.getCurrentP().getName() + ": In welcher Zeile liegt das zu drehende Panel?");
+    		int y = s.nextInt()-1;
+    		
+    		if (y < 0 || y > 2)
+    		{
+    			System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+        		s.nextLine();
+        		return getRotateY(s);
+    		}
+    		else
+    		{
+    			return y;
+    		}
+    	} catch (InputMismatchException e) {
+    		System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+    		s.nextLine();
+    		return getRotateY(s);
+    	}
+    }
+    
+    private boolean getRotateDirection(Scanner s)
+    {
+    	try
+    	{
+    		System.out.println(queue.getCurrentP().getName() + ": In welche Richtung soll das Brett gedreht werden? (Rechts = true, Links = false)");
+    		boolean dir = s.nextBoolean();
+    		
+    		return dir;
+    	} catch (InputMismatchException e) {
+    		System.out.println("Es werden nur die Werte 'true' oder 'false' akzeptiert");
+    		s.nextLine();
+    		return getRotateDirection(s);
+    	}
+    }
+    
+    private void printBoard()
+    {
+    	System.out.println(this);
+    	System.out.println("");
+    }
+    
+    public int getAmountOfPlayers()
+    {
+    	return this.amountOfPlayers;
     }
 
     public void playRound(Turn turn){
-        queue.next().playRound(turn);
-        System.out.println(this);
+        queue.getCurrentP().playRound(turn);
     }
-
+    
+    private void loadPlayers(Scanner s)
+    {
+    	for (int i = 0; i < amountOfPlayers; i++) {
+    		String name = enterName(s, (i+1));
+            boolean mensch = isHuman(s, (i+1));
+            Color color = whichColor(s, (i+1));
+            
+            if (mensch) 
+            {
+            	Human h = new Human(name, color, board);
+            	queue.enqueue(h);
+            }
+            else 
+            {
+            	Computer c = new Computer(name, color, board);
+            	queue.enqueue(c);
+            }
+        }
+    }
+    
+    private String enterName(Scanner s, int number)
+    {
+    	System.out.println("Spieler "+ number +": Namen eingeben: ");
+        String name = s.next();
+        
+        return name;
+    }
+    
+    private boolean isHuman(Scanner s, int number)
+    {
+    	try
+    	{
+    		System.out.println("Ist der Spieler ein Mensch? (true oder false)");
+            boolean mensch = s.nextBoolean();
+            
+            return mensch;
+    	} catch (InputMismatchException e) {
+    		s.nextLine();
+    		System.out.println("Es werden nur die Strings 'true' oder 'false' akzeptiert.");
+    		return isHuman (s, number);
+    	}
+    }
+    
+    private Color whichColor(Scanner s, int number)
+    {
+    	try
+    	{
+    		System.out.println("Zahl zwischen 0 (inklusiv) und 10 (exklusiv) eingeben: ");
+    		int n = s.nextInt();
+    		if (n < 0 || n > 9)
+    		{
+    			s.nextLine();
+        		System.out.println("Es werden nur die Zahlen '0, 1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert.");
+        		return whichColor(s, number);
+    		}
+    		else
+    		{
+    			Colorpicker picker = new Colorpicker(n);
+        		Color color = picker.getColor();
+        		
+        		return color;
+    		}
+    	} catch (InputMismatchException e) {
+    		s.nextLine();
+    		System.out.println("Es werden nur die Zahlen '0, 1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert.");
+    		return whichColor(s, number);
+    	}
+    }
+    
     public void addPlayer(Player player){
-        queue.add(player);
+        queue.enqueue(player);
     }
 
     public Player generatePlayer(String name, Color color, boolean computer){
@@ -58,6 +248,11 @@ public class Gamemaster {
 
     public Board getBoard(){
         return board;
+    }
+    
+    public Queue getQueue()
+    {
+    	return this.queue;
     }
 
     @Override
