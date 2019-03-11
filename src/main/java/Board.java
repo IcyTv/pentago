@@ -27,118 +27,118 @@ public class Board {
     
     public boolean won(Player currentPlayer)
     {
-    	if (rowIsFilled())
-    	{
-    		winner = currentPlayer;
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
+        if (rowIsFilled())
+        {
+            winner = currentPlayer;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     private boolean rowIsFilled()
     {
-    	for (int i = 0; i < bSize; i++)
-    	{
-    		for (int j = 0; j < bSize; j++)
-    		{
-    			if (horizontalRow(i,j) || verticalRow(i,j) || upLeftRow(i,j) || upRightRow(i,j))
-    			{
-    				return true;
-    			}
-    		}
-    	}
-    	return false;
+        for (int i = 0; i < bSize; i++)
+        {
+            for (int j = 0; j < bSize; j++)
+            {
+                if (horizontalRow(i,j) || verticalRow(i,j) || upLeftRow(i,j) || upRightRow(i,j))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     private boolean horizontalRow(int i, int j)
     {
-    	if (j > this.bSize-5) return false;
-    	
-    	Piece testPiece = this.get(i, j);
-    	if (testPiece == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		for (int k = 0; k < 5; k++)
-    		{
-    			if (testPiece != this.get(j+k, i))
-    			{
-    				return false;
-    			}
-    		}
-    		return true;
-    	}
+        if (j > this.bSize-5) return false;
+        
+        Piece testPiece = this.get(i, j);
+        if (testPiece == null)
+        {
+            return false;
+        }
+        else
+        {
+            for (int k = 0; k < 5; k++)
+            {
+                if (testPiece != this.get(j+k, i))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     private boolean verticalRow(int i, int j)
     {
-    	if (i > this.bSize-5) return false;
-    	
-    	Piece testPiece = this.get(i, j);
-    	if (testPiece == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		for (int k = 0; k < 5; k++)
-    		{
-    			if (testPiece != this.get(j, i+k))
-    			{
-    				return false;
-    			}
-    		}
-    		return true;
-    	}
+        if (i > this.bSize-5) return false;
+        
+        Piece testPiece = this.get(i, j);
+        if (testPiece == null)
+        {
+            return false;
+        }
+        else
+        {
+            for (int k = 0; k < 5; k++)
+            {
+                if (testPiece != this.get(j, i+k))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     private boolean upLeftRow(int i, int j)
     {
-    	if (j < 4 || i > this.bSize-5) return false;
-    	
-    	Piece testPiece = this.get(i, j);
-    	if (testPiece == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		for (int k = 0; k < 5; k++)
-    		{
-    			if (testPiece != this.get(j-k, i+k))
-    			{
-    				return false;
-    			}
-    		}
-    		return true;
-    	}
+        if (j < 4 || i > this.bSize-5) return false;
+        
+        Piece testPiece = this.get(i, j);
+        if (testPiece == null)
+        {
+            return false;
+        }
+        else
+        {
+            for (int k = 0; k < 5; k++)
+            {
+                if (testPiece != this.get(j-k, i+k))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     private boolean upRightRow(int i, int j)
     {
-    	if (j > this.bSize-5 || i > this.bSize-5) return false;
-    	
-    	Piece testPiece = this.get(i, j);
-    	if (testPiece == null)
-    	{
-    		return false;
-    	}
-    	else
-    	{
-    		for (int k = 0; k < 5; k++)
-    		{
-    			if (testPiece != this.get(j+k, i+k))
-    			{
-    				return false;
-    			}
-    		}
-    		return true;
-    	}
+        if (j > this.bSize-5 || i > this.bSize-5) return false;
+        
+        Piece testPiece = this.get(i, j);
+        if (testPiece == null)
+        {
+            return false;
+        }
+        else
+        {
+            for (int k = 0; k < 5; k++)
+            {
+                if (testPiece != this.get(j+k, i+k))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     
     public void set(int x, int y, Piece piece) {
@@ -162,24 +162,24 @@ public class Board {
         int markerX = 0;
         for (int i = 0; i < bSize; i++) {
             for (int n = 0; n < bSize; n++) {
-            	markerX++;
+                markerX++;
                 ret += getPlayerNumber(i, n) + " ";
                 if (markerX == pSize)
                 {
-                	ret += "| ";
-                	markerX = 0;
+                    ret += "| ";
+                    markerX = 0;
                 }
             }
             ret += "\n";
             markerY++;
             if (markerY == pSize)
             {
-            	for (int k = 0; k < bSize; k++)
-            	{
-            		ret += "___";
-            	}
-            	markerY = 0;
-            	ret += "\n";
+                for (int k = 0; k < bSize; k++)
+                {
+                    ret += "___";
+                }
+                markerY = 0;
+                ret += "\n";
             }
         }
         return ret;
@@ -187,25 +187,29 @@ public class Board {
     
     private int getPlayerNumber(int i, int j)
     {
-    	Piece piece = this.get(i, j);
-    	if (piece == null) return 0;
-    	
-    	Player playingP  = piece.getPlayer();
-    	Node   node      = gm.getQueue().getFirstNode();
-    	
-    	for (int k = 0; k < gm.getAmountOfPlayers(); k++)
-    	{
-    		if (playingP == node.getPlayer())
-    		{
-    			return k+1;
-    		}
-    		else
-    		{
-    			node = node.getNext();
-    		}
-    	}
-    	
-    	return 0;
+        Piece piece = this.get(i, j);
+        if (piece == null) return 0;
+        
+        Player playingP  = piece.getPlayer();
+        Node   node      = gm.getQueue().getFirstNode();
+        
+        for (int k = 0; k < gm.getAmountOfPlayers(); k++)
+        {
+            if (playingP == node.getPlayer())
+            {
+                return k+1;
+            }
+            else
+            {
+                node = node.getNext();
+            }
+        }
+        
+        return 0;
+    }
+    
+    public Player getWinner() {
+        return winner;
     }
     
 }

@@ -36,6 +36,7 @@ public class Gamemaster {
         		computer.playRound();
         	}
         }
+        System.out.println(board.getWinner() + " hat gewonnen!");
         s.close();
     }
     
