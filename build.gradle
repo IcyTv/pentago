@@ -4,3 +4,7 @@ apply plugin: "eclipse"
 repositories {
     mavenCentral()
 }
+
+dependencies {
+    
+}
