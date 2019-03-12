@@ -1,3 +1,11 @@
+/** Die Klasse Board modelliert das Spielbrett. Es hat mehrere, in einem 2D-Array angeordnete
+ *  Panels und kennt Gamemaster und Player.
+ *  Das Board kann ein Piece an einen bestimmten Platz setzen. Dazu ruft es die set()-Methode
+ *  des entsprechenden Panels auf.
+ *  Das Board kann ausserdem feststellen, ob es eine Fuenferreihe gibt, und speichert dann den
+ *  Spieler, dem die Pieces dieser Fuenferreihe gehoeren.
+    **/ 
+
 
 public class Board {
 
@@ -117,8 +125,8 @@ public class Board {
 	}
 
 	public Piece get(int x, int y) {
-		int size = panels[0][0].getSize();
-		return panels[x / size][y / size].get(x % size, y % size);
+		// int size = panels[0][0].getSize();
+		return panels[x / pSize][y / pSize].get(x % pSize, y % pSize);
 	}
 
 	public void rotate(int x, int y, boolean dir) {
@@ -173,6 +181,14 @@ public class Board {
 
 	public Player getWinner() {
 		return winner;
+	}
+
+	public int getPSize() {
+		return pSize;
+	}
+
+	public int getBSize() {
+		return bSize;
 	}
 
 }

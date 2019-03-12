@@ -1,23 +1,22 @@
 import java.awt.Color;
 
-
-public class Colorpicker{
+public class Colorpicker {
     private Color color;
-    
+
     public Colorpicker(int n) {
-        switch(n){ 
-        case 0: 
-            color = Color.RED; 
-            break; 
-        case 1: 
-            color = Color.GREEN;  
-            break; 
-        case 2: 
-            color = Color.BLUE;  
-            break; 
-        case 3: 
-            color = Color.MAGENTA;  
-            break; 
+        switch (n) {
+        case 0:
+            color = Color.RED;
+            break;
+        case 1:
+            color = Color.GREEN;
+            break;
+        case 2:
+            color = Color.BLUE;
+            break;
+        case 3:
+            color = Color.MAGENTA;
+            break;
         case 4:
             color = Color.CYAN;
             break;
@@ -36,11 +35,11 @@ public class Colorpicker{
         case 9:
             color = Color.PINK;
             break;
-        default: 
-            System.out.println("i liegt nicht zwischen 0 und 10"); 
-        } 
+        default:
+            System.out.println("i liegt nicht zwischen 0 und 10");
+        }
     }
-    
+
     public Color getColor() {
         return color;
     }

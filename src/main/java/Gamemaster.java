@@ -1,5 +1,12 @@
+
+/**Der Gamemaster modelliert das Gesamtspiel. Mit seiner Erzeugung laeuft auch das Spiel ab.
+ * Er hat das Board, die Queue, die Player.
+   **/
+
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Gamemaster {
@@ -32,8 +39,6 @@ public class Gamemaster {
 				computer.playRound();
 			}
 		}
-
-		System.out.println(board.getWinner() + " hat gewonnen");
 		s.close();
 	}
 
@@ -43,14 +48,28 @@ public class Gamemaster {
 			int x = s.nextInt() - 1;
 
 			if (x < 0 || x > 8) {
-				System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+				String ret = "Es werden nur die Zahlen ";
+				for (int i = 1; i < board.getBSize() + 1; i++) {
+					ret += i + ", ";
+				}
+				ret = ret.substring(0, ret.length() - 2);
+				ret += " akzeptiert";
 				s.nextLine();
+				System.out.println(ret);
 				return getPieceX(s);
 			} else {
 				return x;
 			}
 		} catch (InputMismatchException e) {
-			System.out.println("Es werden nur die Zahlen '1, 2, 3, 4, 5, 6, 7, 8, 9' akzeptiert");
+
+			String ret = "Es werden nur die Zahlen ";
+			for (int i = 1; i < board.getBSize() + 1; i++) {
+				ret += i + ", ";
+			}
+			ret = ret.substring(0, ret.length() - 2);
+			ret += " akzeptiert";
+
+			System.out.println(ret);
 			s.nextLine();
 			return getPieceX(s);
 		}
@@ -100,15 +119,26 @@ public class Gamemaster {
 			System.out.println(queue.getCurrentP().getName() + ": In welcher Zeile liegt das zu drehende Panel?");
 			int y = s.nextInt() - 1;
 
-			if (y < 0 || y > 2) {
-				System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+			if (y < 0 || y > board.getPSize()) {
+				String ret = "Es werden nur die Zahlen ";
+				for (int i = 1; i < board.getPSize(); i++) {
+					ret += i + ", ";
+				}
+				ret = ret.substring(0, ret.length() - 2);
+				ret += " akzeptiert";
+				System.out.println(ret);
 				s.nextLine();
 				return getRotateY(s);
 			} else {
 				return y;
 			}
 		} catch (InputMismatchException e) {
-			System.out.println("Es werden nur die Zahlen '1, 2, 3' akzeptiert");
+			String ret = "Es werden nur die Zahlen ";
+			for (int i = 1; i < board.getPSize(); i++) {
+				ret += i + ", ";
+			}
+			ret = ret.substring(0, ret.length() - 2);
+			ret += " akzeptiert";
 			s.nextLine();
 			return getRotateY(s);
 		}
@@ -142,10 +172,13 @@ public class Gamemaster {
 	}
 
 	private void loadPlayers(Scanner s) {
+		int[] colors = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		int current = 0;
+
 		for (int i = 0; i < amountOfPlayers; i++) {
 			String name = enterName(s, (i + 1));
-			boolean mensch = isHuman(s, (i + 1));
-			Color color = whichColor(s, (i + 1));
+			boolean mensch = true;// isHuman(s, (i + 1));
+			Color color = new Colorpicker(colors[current++]).getColor();// whichColor(s, (i + 1));
 
 			if (mensch) {
 				Human h = new Human(name, color, board);
@@ -212,6 +245,10 @@ public class Gamemaster {
 
 	public Board getBoard() {
 		return board;
+	}
+
+	public Player getWinner() {
+		return board.getWinner();
 	}
 
 	public Queue getQueue() {

@@ -6,5 +6,5 @@ repositories {
 }
 
 dependencies {
-    
+    //compile project(":pentago-engine")
 }

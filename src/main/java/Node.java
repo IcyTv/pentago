@@ -1,3 +1,8 @@
+/**Die Klasse Node modelliert einen Datenknoten einer Schlange.
+ * Sie kennt Player und sich selbst.
+ * Sie kann den eigenen Player und ihren Nachfolgeknoten zurueckgeben und neue Knoten hinter
+ * sich einreihen.
+   **/
 
 public class Node {
 	private Player player;
