@@ -14,7 +14,7 @@ public class Starter {
 		in = new Scanner(System.in);
 		int bSize = getBoardSize();
 		int pSize = getPanelSize(bSize);
-		new Gamemaster(bSize, pSize, howManyPlayers()).getWinner();
+		System.out.println(new Gamemaster(bSize, pSize, howManyPlayers()).getWinner().getName() + " hat gewonnen");
 	}
 
 	private static int getPanelSize(int bSize) {
