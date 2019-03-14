@@ -1,7 +1,9 @@
-/**Die Klasse Queue implementiert den ADT Schlange mit Wraparound
- * Sie hat Nodes und kennt den Gamemaster;
-   **/
+package model;
 
+/**
+ * Die Klasse Queue implementiert den ADT Schlange mit Wraparound Sie hat Nodes
+ * und kennt den Gamemaster;
+ **/
 
 public class Queue {
     private Node current;
@@ -21,16 +23,15 @@ public class Queue {
     public Node getFirstNode() {
         return first;
     }
-    
-    /**Reiht einen Player in die Schlange ein.
-     * Wenn es der letzte Player ist, wird ihm der erste Player als Nachfolger gesetzt.
+
+    /**
+     * Reiht einen Player in die Schlange ein. Wenn es der letzte Player ist, wird
+     * ihm der erste Player als Nachfolger gesetzt.
      * 
-     * @param p         Einzureihender Player
-       **/
-    public void enqueue(Player p)
-    {
-        if (first == null)
-        {
+     * @param p Einzureihender Player
+     **/
+    public void enqueue(Player p) {
+        if (first == null) {
             first = new Node(p);
             current = first;
         } else {

@@ -1,3 +1,4 @@
+package model;
 
 /**Der Gamemaster modelliert das Gesamtspiel. Mit seiner Erzeugung laeuft auch das Spiel ab.
  * Er hat das Board, die Queue, die Player.
@@ -14,6 +15,8 @@ public class Gamemaster {
 	private int amountOfPlayers;
 	private Board board;
 	private Queue queue;
+
+	private boolean currentTurnPlace;
 
 	public Gamemaster(int bSize, int pSize, int amountOfPlayers) {
 		this.amountOfPlayers = amountOfPlayers;
@@ -40,6 +43,36 @@ public class Gamemaster {
 			}
 		}
 		s.close();
+	}
+
+	public Gamemaster(int bSize, int pSize, int amountOfPlayers, boolean text) {
+		if (text) {
+			throw new RuntimeException("Please use the other constructor for text output");
+		}
+
+		this.amountOfPlayers = amountOfPlayers;
+		currentTurnPlace = true;
+
+		board = new Board(bSize, pSize, this);
+		queue = new Queue(this);
+
+		int[] colors = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		int current = 0;
+
+		for (int i = 0; i < amountOfPlayers; i++) {
+			String name = "Player " + i;// enterName(s, (i + 1));
+			boolean mensch = true;// isHuman(s, (i + 1));
+			Color color = new Colorpicker(colors[current++]).getColor();// whichColor(s, (i + 1));
+
+			if (mensch) {
+				Human h = new Human(name, color, board);
+				queue.enqueue(h);
+			} else {
+				Computer c = new Computer(name, color, board);
+				queue.enqueue(c);
+			}
+		}
+
 	}
 
 	private int getPieceX(Scanner s) {
@@ -243,6 +276,23 @@ public class Gamemaster {
 		}
 	}
 
+	public void placePiece(int x, int y) {
+		if (currentTurnPlace) {
+			board.set(x, y, queue.getCurrentP().getPiece());
+			currentTurnPlace = false;
+		} else {
+			System.err.println("NOT A CLKICK TURN!!");
+		}
+	}
+
+	public void rotPanel(int x, int y, boolean dir) {
+		if (!currentTurnPlace) {
+			board.rotate(x, y, dir);
+			currentTurnPlace = true;
+			queue.nextPlayer();
+		}
+	}
+
 	public Board getBoard() {
 		return board;
 	}
@@ -255,9 +305,21 @@ public class Gamemaster {
 		return this.queue;
 	}
 
+	public Player getCurrentPlayer() {
+		return queue.getCurrentP();
+	}
+
+	public boolean currentTurnIsPlaceTurn() {
+		return currentTurnPlace;
+	}
+
 	@Override
 	public String toString() {
 		return board.toString();
+	}
+
+	public boolean won() {
+		return board.won(queue.getCurrentP());
 	}
 
 	// ********STATIC METHODS********//

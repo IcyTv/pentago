@@ -2,18 +2,10 @@
 	"configurations": [
 		{
 			"type": "java",
-			"name": "CodeLens (Launch) - Starter",
+			"name": "CodeLens (Launch) - Graphical",
 			"request": "launch",
-			"mainClass": "Starter",
-			"projectName": "pentago",
-			"console": "integratedTerminal"
-		},
-		{
-			"type": "java",
-			"name": "CodeLens (Launch) - Testing",
-			"request": "launch",
-			"mainClass": "Testing",
-			"cwd": "${workspaceFolder}"
+			"mainClass": "graphics.Starter",
+			"projectName": "pentago"
 		}
 	]
 }
