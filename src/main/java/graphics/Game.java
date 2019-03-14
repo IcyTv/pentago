@@ -23,6 +23,7 @@ public class Game extends JPanel implements MouseListener {
     private Timer tm;
 
     private int[] rotPos;
+    private int[] mousePressedPos;
 
     private static int WIDTH;
     private static int HEIGHT;
@@ -61,9 +62,6 @@ public class Game extends JPanel implements MouseListener {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, WIDTH, HEIGHT);
 
-        int height = HEIGHT - 20;
-        int width = WIDTH - 20;
-
         if (!gm.won()) {
             int bSize = gm.getBoard().getBSize();
             int pSize = gm.getBoard().getPSize();
@@ -74,20 +72,22 @@ public class Game extends JPanel implements MouseListener {
                     g2.setColor(Color.WHITE);
                 }
                 // System.out.println(i / bSize);
-                g2.fillRect((i % bSize) * (width / bSize), (i / bSize) * (height / bSize), (width / bSize),
-                        (height / bSize));
+                g2.fillRect((i % bSize) * (WIDTH / bSize), (i / bSize) * (HEIGHT / bSize), (WIDTH / bSize),
+                        (HEIGHT / bSize));
             }
 
             for (int i = 0; i < pSize * pSize; i++) {
                 if (rotPos != null && rotPos[0] == i % pSize && rotPos[1] == i / pSize) {
                     g2.setColor(new Color(0, 198, 72, 20));
-                    g2.fillRect((i % pSize) * (width / pSize), (i / pSize) * (height / pSize), (width / pSize),
-                            (height / pSize));
+                    g2.fillRect((i % pSize) * (WIDTH / pSize), (i / pSize) * (HEIGHT / pSize), (WIDTH / pSize),
+                            (HEIGHT / pSize));
+
+                    // g2.setColor(Color.RED);
 
                 } else {
                     g2.setColor(Color.BLUE);
-                    g2.drawRect((i % pSize) * (width / pSize), (i / pSize) * (height / pSize), (width / pSize),
-                            (height / pSize));
+                    g2.drawRect((i % pSize) * (WIDTH / pSize), (i / pSize) * (HEIGHT / pSize), (WIDTH / pSize),
+                            (HEIGHT / pSize));
                 }
             }
 
@@ -95,35 +95,20 @@ public class Game extends JPanel implements MouseListener {
                 Piece tmp = gm.getBoard().get((i % bSize), (i / bSize));
                 if (tmp != null) {
                     g2.setColor(tmp.getColor());
-                    g2.fillOval((i % bSize) * (width / bSize), (i / bSize) * (height / bSize), (width / bSize),
-                            (height / bSize));
+                    g2.fillOval((i % bSize) * (WIDTH / bSize), (i / bSize) * (HEIGHT / bSize), (WIDTH / bSize),
+                            (HEIGHT / bSize));
                 }
             }
+            g2.setColor(gm.getCurrentPlayer().getColor());
+            g2.drawRect(0, 0, WIDTH - 1, HEIGHT - 2);
         } else {
             // TODO Display winner
+            g2.drawString(gm.getWinner().getName() + " won", WIDTH / 2, HEIGHT / 2);
         }
     }
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        if (gm.currentTurnIsPlaceTurn()) {
-            int bSize = gm.getBoard().getBSize();
-            int x = arg0.getX() / ((WIDTH - 20) / bSize);
-            int y = arg0.getY() / ((HEIGHT - 20) / bSize);
-
-            gm.placePiece(x, y);
-
-            rotPos = null;
-        } else {
-            if (rotPos == null) {
-                int pSize = gm.getBoard().getPSize();
-                int x = arg0.getX() / ((WIDTH - 20) / pSize);
-                int y = arg0.getY() / ((WIDTH - 20) / pSize);
-                rotPos = new int[] { x, y };
-            } else {
-                System.out.println("Rot dirt");
-            }
-        }
     }
 
     @Override
@@ -138,12 +123,44 @@ public class Game extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent arg0) {
+        if (gm.currentTurnIsPlaceTurn()) {
+            int bSize = gm.getBoard().getBSize();
+            int x = arg0.getX() / (WIDTH / bSize);
+            int y = arg0.getY() / (HEIGHT / bSize);
+
+            gm.placePiece(x, y);
+        } else {
+            if (rotPos == null) {
+                int pSize = gm.getBoard().getPSize();
+                int x = arg0.getX() / (WIDTH / pSize);
+                int y = arg0.getY() / (HEIGHT / pSize);
+                rotPos = new int[] { x, y };
+            } else {
+                mousePressedPos = new int[] { arg0.getX(), arg0.getY() };
+            }
+        }
 
     }
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
+        if (!gm.currentTurnIsPlaceTurn() && rotPos != null && mousePressedPos != null) {
+            int dx = mousePressedPos[0] - arg0.getX();
+            // System.out.println(dx);
 
+            if (dx > -50 && dx < 50) {
+                return;
+            }
+
+            if (dx < 0) {
+                gm.rotPanel(rotPos[0], rotPos[1], false);
+            } else {
+                gm.rotPanel(rotPos[0], rotPos[1], true);
+            }
+
+            rotPos = null;
+            mousePressedPos = null;
+        }
     }
 
 }

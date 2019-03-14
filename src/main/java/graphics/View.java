@@ -12,7 +12,7 @@ public class View extends JFrame {
     public View(int width, int height) {
         super("Temporary View");
 
-        setSize(width, height);
+        setSize(width, height + 30);
 
         menu = new Menu(this);
         game = new Game(width, height);

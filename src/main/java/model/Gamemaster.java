@@ -5,9 +5,8 @@ package model;
    **/
 
 import java.awt.Color;
-import java.util.ArrayList;
+
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Gamemaster {
@@ -15,6 +14,8 @@ public class Gamemaster {
 	private int amountOfPlayers;
 	private Board board;
 	private Queue queue;
+
+	private boolean won;
 
 	private boolean currentTurnPlace;
 
@@ -52,6 +53,7 @@ public class Gamemaster {
 
 		this.amountOfPlayers = amountOfPlayers;
 		currentTurnPlace = true;
+		won = false;
 
 		board = new Board(bSize, pSize, this);
 		queue = new Queue(this);
@@ -280,8 +282,8 @@ public class Gamemaster {
 		if (currentTurnPlace) {
 			board.set(x, y, queue.getCurrentP().getPiece());
 			currentTurnPlace = false;
-		} else {
-			System.err.println("NOT A CLKICK TURN!!");
+
+			won = board.won(queue.getCurrentP());
 		}
 	}
 
@@ -289,6 +291,7 @@ public class Gamemaster {
 		if (!currentTurnPlace) {
 			board.rotate(x, y, dir);
 			currentTurnPlace = true;
+			won = board.won(queue.getCurrentP());
 			queue.nextPlayer();
 		}
 	}
@@ -319,7 +322,7 @@ public class Gamemaster {
 	}
 
 	public boolean won() {
-		return board.won(queue.getCurrentP());
+		return won;
 	}
 
 	// ********STATIC METHODS********//
