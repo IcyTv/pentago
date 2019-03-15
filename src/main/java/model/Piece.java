@@ -6,6 +6,7 @@ package model;
     Autor: Felix **/
 
 import java.awt.Color;
+import java.util.Objects;
 
 public class Piece {
 
@@ -36,4 +37,19 @@ public class Piece {
         return Integer.toString(color.getRed());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Piece)) {
+            return false;
+        }
+        Piece piece = (Piece) o;
+        return Objects.equals(color, piece.color) && Objects.equals(player, piece.player);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, player);
+    }
 }

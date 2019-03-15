@@ -62,10 +62,11 @@ public class Board {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (testPiece != this.get(j + k, i)) {
+				if (!testPiece.equals(this.get(j + k, i))) {
 					return false;
 				}
 			}
+			System.out.println("Horizontal row");
 			return true;
 		}
 	}
@@ -79,10 +80,11 @@ public class Board {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (testPiece != this.get(j, i + k)) {
+				if (!testPiece.equals(this.get(j, i + k))) {
 					return false;
 				}
 			}
+			System.out.println("vertical row");
 			return true;
 		}
 	}
@@ -96,10 +98,11 @@ public class Board {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (testPiece != this.get(j - k, i + k)) {
+				if (!testPiece.equals(this.get(j - k, i + k))) {
 					return false;
 				}
 			}
+			System.out.println("Up left");
 			return true;
 		}
 	}
@@ -113,21 +116,20 @@ public class Board {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (testPiece != this.get(j + k, i + k)) {
+				if (!testPiece.equals(this.get(j + k, i + k))) {
 					return false;
 				}
 			}
+			System.out.println("Up right");
 			return true;
 		}
 	}
 
 	public void set(int x, int y, Piece piece) {
-		int size = panels[0][0].getSize();
-		panels[x / size][y / size].set(x % size, y % size, piece);
+		panels[x / pSize][y / pSize].set(x % pSize, y % pSize, piece);
 	}
 
 	public Piece get(int x, int y) {
-		// int size = panels[0][0].getSize();
 		return panels[x / pSize][y / pSize].get(x % pSize, y % pSize);
 	}
 

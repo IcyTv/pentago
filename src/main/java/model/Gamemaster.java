@@ -62,16 +62,10 @@ public class Gamemaster {
 
 		for (int i = 0; i < amountOfPlayers; i++) {
 			String name = "Player " + i;// enterName(s, (i + 1));
-			boolean mensch = true;// isHuman(s, (i + 1));
 			Color color = new Colorpicker(colors[current++]).getColor();// whichColor(s, (i + 1));
 
-			if (mensch) {
-				Human h = new Human(name, color, board);
-				queue.enqueue(h);
-			} else {
-				Computer c = new Computer(name, color, board);
-				queue.enqueue(c);
-			}
+			Human h = new Human(name, color, board);
+			queue.enqueue(h);
 		}
 
 	}
