@@ -5,7 +5,6 @@ package model;
    **/
 
 import java.awt.Color;
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -283,6 +282,8 @@ public class Gamemaster {
 			board.set(x, y, queue.getCurrentP().getPiece());
 			currentTurnPlace = false;
 
+			System.out.println(board.won(queue.getCurrentP()));
+			System.out.println(board);
 			won = board.won(queue.getCurrentP());
 		}
 	}
@@ -291,6 +292,7 @@ public class Gamemaster {
 		if (!currentTurnPlace) {
 			board.rotate(x, y, dir);
 			currentTurnPlace = true;
+			System.out.println(board.won(queue.getCurrentP()));
 			won = board.won(queue.getCurrentP());
 			queue.nextPlayer();
 		}

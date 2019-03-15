@@ -143,7 +143,7 @@ public class Board {
 		for (int i = 0; i < bSize; i++) {
 			for (int n = 0; n < bSize; n++) {
 				markerX++;
-				ret += getPlayerNumber(i, n) + " ";
+				ret += getPlayerNumber(n, i) + " ";
 				if (markerX == pSize) {
 					ret += "| ";
 					markerX = 0;

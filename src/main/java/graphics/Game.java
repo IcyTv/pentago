@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.Timer;
-import javax.swing.JPanel;
 import javax.swing.AbstractAction;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import model.Gamemaster;
 import model.Piece;
@@ -102,7 +102,6 @@ public class Game extends JPanel implements MouseListener {
             g2.setColor(gm.getCurrentPlayer().getColor());
             g2.drawRect(0, 0, WIDTH - 1, HEIGHT - 2);
         } else {
-            // TODO Display winner
             g2.drawString(gm.getWinner().getName() + " won", WIDTH / 2, HEIGHT / 2);
         }
     }
@@ -123,6 +122,7 @@ public class Game extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent arg0) {
+        System.out.println(gm.won() ? "won" : "not won");
         if (gm.currentTurnIsPlaceTurn()) {
             int bSize = gm.getBoard().getBSize();
             int x = arg0.getX() / (WIDTH / bSize);

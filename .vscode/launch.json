@@ -2,6 +2,14 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "CodeLens (Launch) - Starter",
+			"request": "launch",
+			"mainClass": "model.Starter",
+			"projectName": "pentago",
+			"console": "integratedTerminal"
+		},
+		{
+			"type": "java",
 			"name": "CodeLens (Launch) - Graphical",
 			"request": "launch",
 			"mainClass": "graphics.Starter",
