@@ -1,2 +1,0 @@
-include ":pentago-engine"
-project(":pentago-engine").projectDir = new File("../pentago-engine/engine")

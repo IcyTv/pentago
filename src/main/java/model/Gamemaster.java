@@ -273,12 +273,19 @@ public class Gamemaster {
 
 	public void placePiece(int x, int y) {
 		if (currentTurnPlace) {
-			board.set(x, y, queue.getCurrentP().getPiece());
-			currentTurnPlace = false;
+			try
+			{
+				Turn turn = new Turn(x, y, 0, 0, false, board); //Nur x und y sind essentiell
+				board.set(x, y, queue.getCurrentP().getPiece());
+				currentTurnPlace = false;
 
-			System.out.println(board.won(queue.getCurrentP()));
-			System.out.println(board);
-			won = board.won(queue.getCurrentP());
+				System.out.println(board.won(queue.getCurrentP()));
+				System.out.println(board);
+				won = board.won(queue.getCurrentP());
+			} catch (IllegalArgumentException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 

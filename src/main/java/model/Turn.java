@@ -33,8 +33,7 @@ public class Turn {
         this.board = board;
 
         if (!valid() && !softFail) {
-            // TODO reimplement throw new IllegalArgumentException("Illegal turn!");
-            System.out.println("Hey, nicht auf dich selbst, jetzt wirst du übersprungen");
+            throw new IllegalArgumentException("Illegal turn!");
         }
     }
 

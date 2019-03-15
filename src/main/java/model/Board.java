@@ -43,9 +43,9 @@ public class Board {
 	}
 
 	private boolean rowIsFilled() {
-		for (int i = 0; i < bSize; i++) {
-			for (int j = 0; j < bSize; j++) {
-				if (horizontalRow(i, j) || verticalRow(i, j) || upLeftRow(i, j) || upRightRow(i, j)) {
+		for (int x = 0; x < bSize; x++) {
+			for (int y = 0; y < bSize; y++) {
+				if (horizontalRow(x, y) || verticalRow(x, y) || upLeftRow(x, y) || upRightRow(x, y)) {
 					return true;
 				}
 			}
@@ -53,16 +53,16 @@ public class Board {
 		return false;
 	}
 
-	private boolean horizontalRow(int i, int j) {
-		if (j > this.bSize - 5)
+	private boolean horizontalRow(int x, int y) {
+		if (x > this.bSize - 5)
 			return false;
 
-		Piece testPiece = this.get(i, j);
+		Piece testPiece = this.get(x, y);
 		if (testPiece == null) {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (!testPiece.equals(this.get(j + k, i))) {
+				if (!testPiece.equals(this.get(x + k, y))) {
 					return false;
 				}
 			}
@@ -71,16 +71,16 @@ public class Board {
 		}
 	}
 
-	private boolean verticalRow(int i, int j) {
-		if (i > this.bSize - 5)
+	private boolean verticalRow(int x, int y) {
+		if (y > this.bSize - 5)
 			return false;
 
-		Piece testPiece = this.get(i, j);
+		Piece testPiece = this.get(x, y);
 		if (testPiece == null) {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (!testPiece.equals(this.get(j, i + k))) {
+				if (!testPiece.equals(this.get(x, y + k))) {
 					return false;
 				}
 			}
@@ -89,16 +89,16 @@ public class Board {
 		}
 	}
 
-	private boolean upLeftRow(int i, int j) {
-		if (j < 4 || i > this.bSize - 5)
+	private boolean upLeftRow(int x, int y) {
+		if (x < 4 || y > this.bSize - 5)
 			return false;
 
-		Piece testPiece = this.get(i, j);
+		Piece testPiece = this.get(x, y);
 		if (testPiece == null) {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (!testPiece.equals(this.get(j - k, i + k))) {
+				if (!testPiece.equals(this.get(x - k, y + k))) {
 					return false;
 				}
 			}
@@ -107,16 +107,16 @@ public class Board {
 		}
 	}
 
-	private boolean upRightRow(int i, int j) {
-		if (j > this.bSize - 5 || i > this.bSize - 5)
+	private boolean upRightRow(int x, int y) {
+		if (x > this.bSize - 5 || y > this.bSize - 5)
 			return false;
 
-		Piece testPiece = this.get(i, j);
+		Piece testPiece = this.get(x, y);
 		if (testPiece == null) {
 			return false;
 		} else {
 			for (int k = 0; k < 5; k++) {
-				if (!testPiece.equals(this.get(j + k, i + k))) {
+				if (!testPiece.equals(this.get(x + k, y + k))) {
 					return false;
 				}
 			}
@@ -142,10 +142,10 @@ public class Board {
 		String ret = "";
 		int markerY = 0;
 		int markerX = 0;
-		for (int i = 0; i < bSize; i++) {
+		for (int x = 0; x < bSize; x++) {
 			for (int n = 0; n < bSize; n++) {
 				markerX++;
-				ret += getPlayerNumber(n, i) + " ";
+				ret += getPlayerNumber(n, x) + " ";
 				if (markerX == pSize) {
 					ret += "| ";
 					markerX = 0;
@@ -164,8 +164,8 @@ public class Board {
 		return ret;
 	}
 
-	private int getPlayerNumber(int i, int j) {
-		Piece piece = this.get(i, j);
+	private int getPlayerNumber(int x, int y) {
+		Piece piece = this.get(x, y);
 		if (piece == null)
 			return 0;
 
