@@ -19,7 +19,7 @@ public class Computer extends Player {
      **/
     public Computer(String name, Color color, Board board) {
         super(name, color, board, false);
-        strategy = new Strategy();
+        strategy = new Strategy(board);
     }
 
     public void playRound() {

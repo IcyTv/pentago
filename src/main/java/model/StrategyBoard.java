@@ -1,17 +1,7 @@
 package model;
 
-/**
- * Die Klasse Board modelliert das Spielbrett. Es hat mehrere, in einem 2D-Array
- * angeordnete Panels und kennt Gamemaster und Player. Das Board kann ein Piece
- * an einen bestimmten Platz setzen. Dazu ruft es die set()-Methode des
- * entsprechenden Panels auf. Das Board kann ausserdem feststellen, ob es eine
- * Fuenferreihe gibt, und speichert dann den Spieler, dem die Pieces dieser
- * Fuenferreihe gehoeren.
- **/
-
-public class Board{
-
-	private Panel[][] panels;
+public class StrategyBoard {
+	private i[][] panels;
 	private boolean done;
 	private Player winner;
 	private int bSize;
@@ -213,5 +203,4 @@ public class Board{
 	public int getBSize() {
 		return bSize;
 	}
-
 }

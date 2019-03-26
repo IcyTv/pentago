@@ -13,8 +13,17 @@ public abstract class Player {
     protected Board board;
     protected Color color; // muss durch core.Constants.COLOR ersetzt werden
     protected boolean human;
+    protected int number;
+    
+    public int getNumber() {
+		return number;
+	}
 
-    /**
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	/**
      * Konstruktor der Klasse Player
      * 
      * @param name  gewuenschter Spielername
