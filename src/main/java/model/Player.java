@@ -4,14 +4,14 @@ package model;
     Jeder Player kennt das Board und hat ein Piece.
     Außerdem hat jeder Player einen Namen, eine Farbe und ist entweder ein Mensch oder kein Mensch.**/
 
-import java.awt.Color;
+import static core.Constants.COLOR;
 
 public abstract class Player {
 
     protected Piece piece;
     protected String name;
     protected Board board;
-    protected Color color; // muss durch core.Constants.COLOR ersetzt werden
+    protected COLOR color; // muss durch core.Constants.COLOR ersetzt werden
     protected boolean human;
     protected int number;
     
@@ -31,7 +31,8 @@ public abstract class Player {
      * @param board Spielbrett
      * @param human 0=Spieler ist Computer, 1=Spieler ist menschlich
      **/
-    public Player(String name, Color color, Board board, boolean human) {
+    public Player(String name, COLOR color, Board board, boolean human, int number) {
+    	this.number = number;
         this.board = board;
         this.name = name;
         this.color = color;
@@ -54,7 +55,7 @@ public abstract class Player {
         board.rotate(rX, rY, dir);
     }
 
-    public Color getColor() {
+    public COLOR getColor() {
         return color;
     }
 

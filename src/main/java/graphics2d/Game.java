@@ -1,4 +1,4 @@
-package graphics;
+package graphics2d;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import model.Computer;
 import model.Gamemaster;
 import model.Piece;
 
@@ -33,8 +34,9 @@ public class Game extends JPanel implements MouseListener {
         WIDTH = width;
         HEIGHT = height;
 
-        gm = new Gamemaster(9, 3, 2, false);
 
+		gm = new Gamemaster(9, 3, 2, new boolean[]{true, false });
+		
         addMouseListener(this);
 
         tm = new Timer(50, new AbstractAction() {
@@ -52,7 +54,7 @@ public class Game extends JPanel implements MouseListener {
     }
 
     public void setPlayers(int players) {
-        gm = new Gamemaster(9, 3, 2, false);
+    	gm = new Gamemaster(9, 3, 4, new boolean[]{true, true, true, true});
     }
 
     // Gameloop
@@ -94,14 +96,46 @@ public class Game extends JPanel implements MouseListener {
             for (int i = 0; i < bSize * bSize; i++) {
                 Piece tmp = gm.getBoard().get((i % bSize), (i / bSize));
                 if (tmp != null) {
-                    g2.setColor(tmp.getColor());
+                    switch(tmp.getColor()) {
+                    case RED:
+                    	g2.setColor(Color.RED);
+                    	break;
+                    case GREEN:
+                    	g2.setColor(Color.GREEN);
+                    	break;
+                    case BLUE:
+                    	g2.setColor(Color.BLUE);
+                    	break;
+                    case PURPLE:
+                    	g2.setColor(Color.PINK);
+                    	break;
+                    default:
+                    	g2.setColor(Color.BLACK);
+                    }
+                	//g2.setColor(tmp.getColor());
                     g2.fillOval((i % bSize) * (WIDTH / bSize), (i / bSize) * (HEIGHT / bSize), (WIDTH / bSize),
                             (HEIGHT / bSize));
                 }
             }
-            g2.setColor(gm.getCurrentPlayer().getColor());
+            switch(gm.getCurrentPlayer().getColor()) {
+            case RED:
+            	g2.setColor(Color.RED);
+            	break;
+            case GREEN:
+            	g2.setColor(Color.GREEN);
+            	break;
+            case BLUE:
+            	g2.setColor(Color.BLUE);
+            	break;
+            case PURPLE:
+            	g2.setColor(Color.PINK);
+            	break;
+            default:
+            	g2.setColor(Color.BLACK);
+            }
             g2.drawRect(0, 0, WIDTH - 1, HEIGHT - 2);
         } else {
+            g2.setColor(Color.WHITE);
             g2.drawString(gm.getWinner().getName() + " won", WIDTH / 2, HEIGHT / 2);
         }
     }
@@ -129,6 +163,8 @@ public class Game extends JPanel implements MouseListener {
             int y = arg0.getY() / (HEIGHT / bSize);
 
             gm.placePiece(x, y);
+            
+            
         } else {
             if (rotPos == null) {
                 int pSize = gm.getBoard().getPSize();
@@ -158,6 +194,13 @@ public class Game extends JPanel implements MouseListener {
                 gm.rotPanel(rotPos[0], rotPos[1], true);
             }
 
+            while (!gm.getCurrentPlayer().isHuman())
+            {
+            	Computer c = (Computer) gm.getCurrentPlayer();
+            	c.playRound();
+            	gm.getQueue().nextPlayer();
+            }
+            
             rotPos = null;
             mousePressedPos = null;
         }

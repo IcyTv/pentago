@@ -1,4 +1,4 @@
-package graphics;
+package graphics2d;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

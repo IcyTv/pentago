@@ -1,19 +1,41 @@
 {
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
 	"configurations": [
 		{
 			"type": "java",
-			"name": "CodeLens (Launch) - Starter",
+			"name": "Debug (Launch) - Current File",
 			"request": "launch",
-			"mainClass": "model.Starter",
-			"projectName": "pentago",
-			"console": "integratedTerminal"
+			"mainClass": "${file}"
 		},
 		{
 			"type": "java",
-			"name": "CodeLens (Launch) - Graphical",
+			"name": "Debug (Launch)-View<pentago>",
 			"request": "launch",
-			"mainClass": "graphics.Starter",
+			"mainClass": "graphics.View",
 			"projectName": "pentago"
+		},
+		{
+			"type": "java",
+			"name": "Debug (Launch)-Starter<pentago>",
+			"request": "launch",
+			"mainClass": "graphics2d.Starter",
+			"projectName": "pentago"
+		},
+		{
+			"type": "java",
+			"name": "Debug (Launch)-Starter<pentago>(1)",
+			"request": "launch",
+			"mainClass": "model.Starter",
+			"projectName": "pentago"
+		},
+		{
+			"type": "java",
+			"name": "Debug (Launch)-Animation",
+			"request": "launch",
+			"mainClass": "core.animation.Animation"
 		}
 	]
 }

@@ -5,7 +5,7 @@ package model;
  *  Der Computer wird aufgefordert, einen Spielzug zu machen. Er findet dann mithilfe seiner 
  *  Strategie einen guenstigen Zug und fuehrt ihn dann aus.
    **/
-import java.awt.Color;
+import static core.Constants.COLOR;
 
 public class Computer extends Player {
     Strategy strategy;
@@ -17,9 +17,9 @@ public class Computer extends Player {
      * @param color gewuenschte Spielerfarbe
      * @param board Spielbrett
      **/
-    public Computer(String name, Color color, Board board) {
-        super(name, color, board, false);
-        strategy = new Strategy(board);
+    public Computer(String name, COLOR color, Board board, int amountOfPlayers, int number) {
+        super(name, color, board, false, number);
+        strategy = new Strategy(board, amountOfPlayers, number);
     }
 
     public void playRound() {

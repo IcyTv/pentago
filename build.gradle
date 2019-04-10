@@ -6,5 +6,7 @@ repositories {
 }
 
 dependencies {
-    //compile project(":pentago-engine")
+   	implementation project(":pentago-engine")
+    
+	implementation 'org.joml:joml-jdk8:1.9.12'
 }

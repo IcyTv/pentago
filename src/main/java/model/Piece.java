@@ -5,12 +5,12 @@ package model;
     
     Autor: Felix **/
 
-import java.awt.Color;
+import static core.Constants.COLOR;
 import java.util.Objects;
 
 public class Piece {
 
-    private Color color;
+    private COLOR color;
     private Player player;
 
     /**
@@ -19,7 +19,7 @@ public class Piece {
      * @param player Spieler, dem das Piece gehoert
      * @param color  Farbe des Pieces
      **/
-    public Piece(Player player, Color color) {
+    public Piece(Player player, COLOR color) {
         this.player = player;
         this.color = color;
     }
@@ -28,13 +28,8 @@ public class Piece {
         return player;
     }
 
-    public Color getColor() {
+    public COLOR getColor() {
         return color;
-    }
-
-    @Override
-    public String toString() {
-        return Integer.toString(color.getRed());
     }
 
     @Override

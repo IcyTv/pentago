@@ -5,7 +5,7 @@ package model;
   * Ein Human dient lediglich der Ausfuehrung uebergebener Spielzuege.
    **/
 
-import java.awt.Color;
+import static core.Constants.COLOR;
 
 public class Human extends Player {
 
@@ -16,8 +16,8 @@ public class Human extends Player {
      * @param color gewuenschte Spielerfarbe
      * @param board Spielbrett
      **/
-    public Human(String name, Color color, Board board) {
-        super(name, color, board, true);
+    public Human(String name, COLOR color, Board board, int number) {
+        super(name, color, board, true, number);
 
     }
 
