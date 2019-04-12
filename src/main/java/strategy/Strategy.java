@@ -1,12 +1,17 @@
-package model;
+package strategy;
 
+import java.util.Arrays;
 import java.util.BitSet;
+
+import model.Board;
+import model.Piece;
+import model.Turn;
 
 public class Strategy {
 
 	public int MAXDEPTH;
-	public static final int SCOREMULTIPLIER = 3;
-	public static final int DEPTH = 3;
+	public static final int SCOREMULTIPLIER = 10;
+	public static final int DEPTH = 9;
 
 	private Board board;
 	private Turn bestTurn;
@@ -20,7 +25,9 @@ public class Strategy {
 		this.ownNumber = ownNumber;
 		this.board = board;
 		this.bestTurn = null;
-		this.currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
+		if(board != null) {
+			this.currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
+		}
 
 		this.ownPiece = new BitSet(amountOfPlayers);
 		for (int i = 0; i < ownPiece.size(); i++) {
@@ -29,14 +36,17 @@ public class Strategy {
 
 		this.MAXDEPTH = DEPTH + ownNumber;
 	}
-
-	/** Gibt bisher nur einen Dummy-Turn zurueck **/
+	
+	
 	public Turn findBestTurn() {
-		encode();
+		if(board != null) {		
+			encode();
+		}
 		System.out.println(".");
 		for (int i = 0; i < currentState.getBSize(); i++) {
 			for (int j = 0; j < currentState.getBSize(); j++) {
 				if (!currentState.emptyBitSet(i, j)) {
+					System.out.println(i + " " + j + " is not empty");
 					if (currentState.get(i, j).get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
 						System.out.println("Mein Piece auf " + i + ", " + j);
 					} else {
@@ -48,6 +58,9 @@ public class Strategy {
 		alphaBeta(ownNumber, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		Turn temp = bestTurn;
 		bestTurn = null;
+		if(board != null) {
+			currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
+		}
 		return temp;
 	}
 
@@ -161,21 +174,13 @@ public class Strategy {
 		{
 			for (int y = 0; y < currentState.getBSize(); y++) {
 				Piece realPiece = board.get(x, y); // Chip im Board im Platz (Es wird durch das Board durchiteriert)
-				boolean codedPiece[] = new boolean[amountOfPlayers]; // Array in dem der Wert der Stelle codiert wird
+				//boolean codedPiece[] = new boolean[amountOfPlayers]; // Array in dem der Wert der Stelle codiert wird
 
-				if (realPiece == null) // Gibt es überhaupt einen Chip im Board an dieser spezifischen Stelle?
+				if (realPiece != null) // Gibt es überhaupt einen Chip im Board an dieser spezifischen Stelle?
 				{
-					for (int i = 0; i < codedPiece.length; i++) {
-						codedPiece[i] = false; // Niemandem gehört der Chip an der Stelle
-					}
-				} else {
-					int num = realPiece.getPlayer().getNumber(); // Nummer des Spielers, dem der Chip gehört
-					for (int i = 0; i < codedPiece.length; i++) {
-						codedPiece[i] = (num == i + 1); // Einem gehört der Chip und das wird dann als true gespeichert
-														// im Array
-					}
+					System.out.println("PlayerNumber" + (realPiece.getPlayer().getNumber() - 1));
+					currentState.set(x, y, realPiece.getPlayer().getNumber() - 1);
 				}
-				currentState.set(x, y, codedPiece);
 			}
 		}
 	}
@@ -206,19 +211,19 @@ public class Strategy {
 		if (currentState.won()) // Man soll nicht weiter probieren, wenn das Board schon gewonnen ist...
 		{
 			if (maximizingPlayer) {
-				// System.out.println("lost");
+				System.out.println("lost");
 				return Integer.MIN_VALUE + 1; // Gegner hat gewonnen, weil das Board gewonnen war, als der Bot am Zug
 												// war
 			} else {
-				// System.out.println("won");
+				System.out.println("won");
 				return Integer.MAX_VALUE; // Bot hat gewonnen, weil das Board gewonnen war, als der Gegner am Zug war
 			}
 		} else if (currentState.draw()) {
 			// System.out.println("draw");
-			return 0; // Unentschieden hat die Wertung 0
+			return -2000; // Unentschieden hat die Wertung 0
 		} else if (depth >= MAXDEPTH) // Abbruch, wenn der Bot zu tief im Baum ist
 		{
-			// System.out.println("ratter ratter ratter");
+			System.out.println("ratter ratter ratter");
 			return staticEvaluation((depth - ownNumber) % amountOfPlayers == 0); // Der Bot bewertet die momentane Lage
 		}
 
@@ -351,5 +356,9 @@ public class Strategy {
 			}
 			return minEval;
 		}
+	}
+	
+	public void setCurrentState(BitBoard currentState) {
+		this.currentState = currentState;
 	}
 }

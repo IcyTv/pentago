@@ -23,6 +23,7 @@ import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
 import core.models.TexturedModel;
+import core.renderEngine.DisplayManager;
 import core.textures.ModelTexture;
 import model.Gamemaster;
 import tools.Maths;
@@ -31,11 +32,15 @@ import tools.Maths;
  * Scene for testing engine.
  */
 public class View extends Scene {
+	private static final int FPS_REFRESH_RATE = 20;
+	
 	private float distance = 2;
 	private int[] currentPanel;
 	private EntityGroup<EntityGroup<Entity>> board;
 	private Gamemaster master;
 	private GUIText text;
+	private GUIText fps;
+	private int fpsCounter;
 	private Queue queue;
 
 	/**
@@ -51,6 +56,9 @@ public class View extends Scene {
 		FontType font = new FontType(Loader.loadTexture("fonts/segoeUI"), new File("res/fonts/segoeUI.fnt"));
 		text = new GUIText("This is some text!", 3f, font, new Vector2f(0f, 0f), 1f, true);
 		text.setColor(1, 1, 1);
+		
+		fps = new GUIText("", 2f, font, new Vector2f(0, 0), 1, false);
+		fps.setColor(1, 0, 0);
 
 		Light sun = new Light(new Vector3f(0, 1000, -700), Maths.rgbToVector(255, 255, 255));
 		super.lights.add(sun);
@@ -106,6 +114,10 @@ public class View extends Scene {
 	@Override
 	public void tickGame() {
 		super.camera.move();
+		if(fpsCounter++ >= FPS_REFRESH_RATE) {	
+			fps.setText("" + (int)(1/DisplayManager.getFrameTimeSeconds()));
+			fpsCounter = 0;
+		}
 		if (!queue.isEmpty()) {
 			try {
 				queue.poll().invoke(new CustomEvent(this));

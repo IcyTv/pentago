@@ -32,7 +32,7 @@ public class Turn {
 
         this.board = board;
 
-        if (!valid() && !softFail) {
+        if (board != null && !valid() && !softFail) {
             throw new IllegalArgumentException("Illegal turn!");
         }
     }
@@ -58,6 +58,11 @@ public class Turn {
 
     public boolean getRotateDirection() {
         return rotateDirection;
+    }
+    
+    //STATIC METHODS
+    public static boolean valid(Board board, int x, int y) {
+    	return board.get(x, y) != null;
     }
 
 }

@@ -113,6 +113,7 @@ public class Controller implements Callback {
 		Thread t = new Thread(c, "Computer Turn Thread");
 		// t.setDaemon(true);
 		t.start();
+
 	}
 
 	public void invoke(MouseClickedEvent ce) throws CallbackStackInterruption {

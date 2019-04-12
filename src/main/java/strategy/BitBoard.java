@@ -1,4 +1,4 @@
-package model;
+package strategy;
 
 import java.util.BitSet;
 
@@ -18,6 +18,8 @@ public class BitBoard {
 				bitPanels[x][y] = new BitPanel(pSize, amountOfPlayers);
 			}
 		}
+		
+		System.out.println("IsEmpty: " + bitPanels[0][0].emptyBitSet(0, 0));
 	}
 
 	public boolean won() {
@@ -127,8 +129,8 @@ public class BitBoard {
 		return bitPanels[x / pSize][y / pSize].emptyBitSet(x % pSize, y % pSize);
 	}
 
-	public void set(int x, int y, boolean[] piece) {
-		bitPanels[x / pSize][y / pSize].set(x % pSize, y % pSize, piece);
+	public void set(int x, int y, int index) {
+		bitPanels[x / pSize][y / pSize].set(x % pSize, y % pSize, index);
 	}
 
 	public void set(int x, int y, boolean b, int index) {
@@ -149,5 +151,23 @@ public class BitBoard {
 
 	public int getBSize() {
 		return bSize;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other.getClass().equals(this.getClass())) {
+			BitBoard o = (BitBoard) other;
+			
+			for(int x = 0; x < o.getBSize(); x++) {
+				for(int y = 0; y < o.getBSize(); y++) {
+					if(!this.get(x, y).equals(o.get(x, y))) {
+						return false;
+					}
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
