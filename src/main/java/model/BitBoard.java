@@ -3,7 +3,7 @@ package model;
 import java.util.BitSet;
 
 public class BitBoard {
-	
+
 	private BitPanel[][] bitPanels;
 	private int bSize;
 	private int pSize;
@@ -27,20 +27,16 @@ public class BitBoard {
 			return false;
 		}
 	}
-	
-	public boolean draw()
-	{
-		for (int x = 0; x < this.bSize; x++)
-		{
-			for (int y = 0; y < this.bSize; y++)
-			{
-				if (this.emptyBitSet(x, y))
-				{
+
+	public boolean draw() {
+		for (int x = 0; x < this.bSize; x++) {
+			for (int y = 0; y < this.bSize; y++) {
+				if (this.emptyBitSet(x, y)) {
 					return false;
 				}
 			}
 		}
-		//System.out.println("Draw");
+		// System.out.println("Draw");
 		return true;
 	}
 
@@ -68,7 +64,7 @@ public class BitBoard {
 					return false;
 				}
 			}
-			//System.out.println("Horizontal row");
+			// System.out.println("Horizontal row");
 			return true;
 		}
 	}
@@ -86,7 +82,7 @@ public class BitBoard {
 					return false;
 				}
 			}
-			//System.out.println("vertical row");
+			// System.out.println("vertical row");
 			return true;
 		}
 	}
@@ -104,7 +100,7 @@ public class BitBoard {
 					return false;
 				}
 			}
-			//System.out.println("Up left");
+			// System.out.println("Up left");
 			return true;
 		}
 	}
@@ -122,18 +118,21 @@ public class BitBoard {
 					return false;
 				}
 			}
-			//System.out.println("Up right");
+			// System.out.println("Up right");
 			return true;
 		}
 	}
-	
-	public boolean emptyBitSet(int x, int y)
-	{
+
+	public boolean emptyBitSet(int x, int y) {
 		return bitPanels[x / pSize][y / pSize].emptyBitSet(x % pSize, y % pSize);
 	}
 
 	public void set(int x, int y, boolean[] piece) {
 		bitPanels[x / pSize][y / pSize].set(x % pSize, y % pSize, piece);
+	}
+
+	public void set(int x, int y, boolean b, int index) {
+		bitPanels[x / pSize][y / pSize].set(x % pSize, y % pSize, b, index);
 	}
 
 	public BitSet get(int x, int y) {

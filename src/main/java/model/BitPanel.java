@@ -3,8 +3,8 @@ package model;
 import java.util.BitSet;
 
 public class BitPanel {
-	
-	private BitSet[][] bitPieces;
+
+    private BitSet[][] bitPieces;
     private int size;
     private int amountOfPlayers;
 
@@ -17,23 +17,20 @@ public class BitPanel {
         this.size = pSize;
         bitPieces = new BitSet[size][size];
         this.amountOfPlayers = amountOfPlayers;
-        
-        for (int i = 0; i < size; i++)
-        {
-        	for (int j = 0; j < size; j++)
-        	{
-        		bitPieces[i][j] = new BitSet(amountOfPlayers);
-        	}
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                bitPieces[i][j] = new BitSet(amountOfPlayers);
+            }
         }
     }
 
     public int getSize() {
         return size;
     }
-    
-    public boolean emptyBitSet(int x, int y)
-    {
-    	return bitPieces[x][y].isEmpty();
+
+    public boolean emptyBitSet(int x, int y) {
+        return bitPieces[x][y].isEmpty();
     }
 
     /**
@@ -44,10 +41,13 @@ public class BitPanel {
      * @param piece zu platzierendes Piece
      **/
     public void set(int x, int y, boolean[] piece) {
-        for (int i = 0; i < piece.length; i++)
-        {
-        	bitPieces[x][y].set(i, piece[i]);
+        for (int i = 0; i < piece.length; i++) {
+            bitPieces[x][y].set(i, piece[i]);
         }
+    }
+
+    public void set(int x, int y, boolean b, int index) {
+        bitPieces[x][y].set(index, b);
     }
 
     /**
@@ -68,14 +68,12 @@ public class BitPanel {
     public void rotate(boolean dir) {
         BitSet[][] tmp;
         tmp = new BitSet[size][size];
-        for (int i = 0; i < size; i++)
-        {
-        	for (int j = 0; j < size; j++)
-        	{
-        		tmp[i][j] = new BitSet(amountOfPlayers);
-        	}
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                tmp[i][j] = new BitSet(amountOfPlayers);
+            }
         }
-        
+
         if (dir == true) {
             // fuer Drehung im den Uhrzeigersinn
             for (int x = 0; x < size; x++) {

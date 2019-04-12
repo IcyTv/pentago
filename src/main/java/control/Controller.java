@@ -11,8 +11,8 @@ import core.inputs.Keyboard;
 import graphics.View;
 import model.Gamemaster;
 
-public class Controller implements Callback{
-	
+public class Controller implements Callback {
+
 	private View view;
 
 	public Controller(View view) {
@@ -21,22 +21,26 @@ public class Controller implements Callback{
 
 	@Override
 	public void invoke(Event e) throws CallbackStackInterruption {
-		if(e.eventType().equals("KeyEvent")) {
+		if (e.eventType().equals("KeyEvent")) {
 			invoke((KeyEvent) e);
 		} else {
 			invoke((MouseClickedEvent) e);
 		}
 	}
-	
+
 	public void invoke(KeyEvent ev) throws CallbackStackInterruption {
 
+		if (!view.getMaster().getCurrentPlayer().isHuman()) {
+			return;
+		}
+
 		boolean press = ev.getAction() == GLFW.GLFW_PRESS;
-		
-		if(press) {
-			if(view.getMaster().won()) {
+
+		if (press) {
+			if (view.getMaster().won()) {
 				return;
 			}
-			switch(Keyboard.toCharacter(ev.getKey())) {
+			switch (Keyboard.toCharacter(ev.getKey())) {
 			case "NUM_1":
 				doTurn(6);
 				break;
@@ -67,38 +71,50 @@ public class Controller implements Callback{
 			}
 		}
 	}
-	
-
 
 	private void doTurn(int numKey) {
-		
+
 		int[] currentPanel = view.getCurrentPanel();
 		Gamemaster master = view.getMaster();
-		
-		if(currentPanel == null) {
-			currentPanel = new int[]{numKey % master.getPSize(), numKey / master.getPSize()};
+
+		if (currentPanel == null) {
+			currentPanel = new int[] { numKey % master.getPSize(), numKey / master.getPSize() };
 			view.setCurrentPanel(currentPanel);
 		} else {
-			if(master.currentTurnIsPlaceTurn()) {
+			if (master.currentTurnIsPlaceTurn()) {
 				int x = currentPanel[0] * master.getPSize() + numKey % master.getPSize();
 				int y = currentPanel[1] * master.getPSize() + numKey / master.getPSize();
 				master.placePiece(x, y);
 				view.resetBoardColor();
 				view.setCurrentPanel(null);
 			} else {
-				if(numKey == 3) {
+				if (numKey == 3) {
 					master.rotPanel(currentPanel[0], currentPanel[1], true);
 					view.resetBoardColor();
 					view.setCurrentPanel(null);
-				} else if(numKey == 5) {
+
+					playRoundComp();
+
+				} else if (numKey == 5) {
 					master.rotPanel(currentPanel[0], currentPanel[1], false);
 					view.resetBoardColor();
 					view.setCurrentPanel(null);
+
+					playRoundComp();
 				}
 			}
 		}
 	}
-	
+
+	private void playRoundComp() {
+
+		CompTurn c = new CompTurn(view, view.getMaster().getAmountOfPlayers() - 1);
+
+		Thread t = new Thread(c, "Computer Turn Thread");
+		// t.setDaemon(true);
+		t.start();
+	}
+
 	public void invoke(MouseClickedEvent ce) throws CallbackStackInterruption {
 	}
 
@@ -107,5 +123,5 @@ public class Controller implements Callback{
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 }
