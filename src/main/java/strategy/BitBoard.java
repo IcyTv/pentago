@@ -18,16 +18,10 @@ public class BitBoard {
 				bitPanels[x][y] = new BitPanel(pSize, amountOfPlayers);
 			}
 		}
-		
-		System.out.println("IsEmpty: " + bitPanels[0][0].emptyBitSet(0, 0));
 	}
 
 	public boolean won() {
-		if (rowIsFilled()) {
-			return true;
-		} else {
-			return false;
-		}
+		return rowIsFilled();
 	}
 
 	public boolean draw() {

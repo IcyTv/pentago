@@ -54,7 +54,7 @@ public class Panel {
     public void rotate(boolean dir) {
         Piece[][] tmp;
         tmp = new Piece[size][size];
-        if (dir == true) {
+        if (dir) {
             // fuer Drehung im den Uhrzeigersinn
             for (int x = 0; x < size; x++) {
                 for (int y = 0; y < size; y++) {

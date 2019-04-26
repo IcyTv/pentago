@@ -9,9 +9,9 @@ import model.Turn;
 
 public class Strategy {
 
-	public int MAXDEPTH;
+	private int MAXDEPTH;
 	public static final int SCOREMULTIPLIER = 10;
-	public static final int DEPTH = 9;
+	public static final int DEPTH = 1;
 
 	private Board board;
 	private Turn bestTurn;
@@ -22,7 +22,7 @@ public class Strategy {
 
 	public Strategy(Board board, int amountOfPlayers, int ownNumber) {
 		this.amountOfPlayers = amountOfPlayers;
-		this.ownNumber = ownNumber;
+		this.ownNumber = ownNumber - 1;
 		this.board = board;
 		this.bestTurn = null;
 		if(board != null) {
@@ -42,7 +42,7 @@ public class Strategy {
 		if(board != null) {		
 			encode();
 		}
-		System.out.println(".");
+		//System.out.println(".");
 		for (int i = 0; i < currentState.getBSize(); i++) {
 			for (int j = 0; j < currentState.getBSize(); j++) {
 				if (!currentState.emptyBitSet(i, j)) {
@@ -106,6 +106,8 @@ public class Strategy {
 					score *= SCOREMULTIPLIER;
 				}
 			}
+		} else {
+			return 0;
 		}
 
 		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
@@ -124,6 +126,8 @@ public class Strategy {
 					score *= SCOREMULTIPLIER;
 				}
 			}
+		} else {
+			return 0;
 		}
 
 		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
@@ -142,6 +146,8 @@ public class Strategy {
 					score *= SCOREMULTIPLIER;
 				}
 			}
+		} else {
+			return 0;
 		}
 
 		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
@@ -160,6 +166,8 @@ public class Strategy {
 					score *= SCOREMULTIPLIER;
 				}
 			}
+		} else {
+			return 0;
 		}
 
 		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
@@ -178,7 +186,7 @@ public class Strategy {
 
 				if (realPiece != null) // Gibt es überhaupt einen Chip im Board an dieser spezifischen Stelle?
 				{
-					System.out.println("PlayerNumber" + (realPiece.getPlayer().getNumber() - 1));
+					System.out.println("PlayerNumber " + (realPiece.getPlayer().getNumber() - 1));
 					currentState.set(x, y, realPiece.getPlayer().getNumber() - 1);
 				}
 			}
@@ -211,19 +219,18 @@ public class Strategy {
 		if (currentState.won()) // Man soll nicht weiter probieren, wenn das Board schon gewonnen ist...
 		{
 			if (maximizingPlayer) {
-				System.out.println("lost");
+				//System.out.println("lost");
 				return Integer.MIN_VALUE + 1; // Gegner hat gewonnen, weil das Board gewonnen war, als der Bot am Zug
 												// war
 			} else {
-				System.out.println("won");
-				return Integer.MAX_VALUE; // Bot hat gewonnen, weil das Board gewonnen war, als der Gegner am Zug war
+				//System.out.println("won");
+				return Integer.MAX_VALUE - 1; // Bot hat gewonnen, weil das Board gewonnen war, als der Gegner am Zug war
 			}
 		} else if (currentState.draw()) {
 			// System.out.println("draw");
 			return -2000; // Unentschieden hat die Wertung 0
 		} else if (depth >= MAXDEPTH) // Abbruch, wenn der Bot zu tief im Baum ist
 		{
-			System.out.println("ratter ratter ratter");
 			return staticEvaluation((depth - ownNumber) % amountOfPlayers == 0); // Der Bot bewertet die momentane Lage
 		}
 
