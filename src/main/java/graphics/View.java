@@ -43,6 +43,8 @@ public class View extends Scene {
 	private int fpsCounter;
 	private Queue queue;
 
+	private Controller controller;
+	
 	/**
 	 * Simple Constructor calling Super.
 	 */
@@ -50,6 +52,7 @@ public class View extends Scene {
 		super(manager);
 		master = new Gamemaster(9, 3, 2, new boolean[] { true, false });
 		queue = new Queue();
+		controller = new Controller(this);
 	}
 
 	public void init() {
@@ -105,7 +108,7 @@ public class View extends Scene {
 		super.camera = new Camera(board.getEntities()
 				.get((master.getBSize() / 2) * master.getBSize() + master.getBSize() / 2).getEntity(0));
 
-		addCallback(new Controller(this));
+		addCallback(controller);
 
 		// picker = new MousePicker(camera, );
 
@@ -239,6 +242,10 @@ public class View extends Scene {
 
 	public Queue getQueue() {
 		return queue;
+	}
+	
+	public Controller getController() {
+		return controller;
 	}
 
 }

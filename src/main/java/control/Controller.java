@@ -93,22 +93,26 @@ public class Controller implements Callback {
 					view.resetBoardColor();
 					view.setCurrentPanel(null);
 
-					playRoundComp();
+					if(!master.getCurrentPlayer().isHuman()) {
+						playRoundComp();
+					}
 
 				} else if (numKey == 5) {
 					master.rotPanel(currentPanel[0], currentPanel[1], false);
 					view.resetBoardColor();
 					view.setCurrentPanel(null);
 
-					playRoundComp();
+					if(!master.getCurrentPlayer().isHuman()) {
+						playRoundComp();
+					}
 				}
 			}
 		}
 	}
 
-	private void playRoundComp() {
+	public void playRoundComp() {
 
-		CompTurn c = new CompTurn(view, view.getMaster().getAmountOfPlayers() - 1);
+		CompTurn c = new CompTurn(view);
 
 		Thread t = new Thread(c, "Computer Turn Thread");
 		// t.setDaemon(true);

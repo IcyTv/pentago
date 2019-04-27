@@ -139,4 +139,5 @@ public class Gamemaster {
 	public static Turn getTurn(int pieceX, int pieceY, int rotX, int rotY, boolean dir, Board board) {
 		return new Turn(pieceX, pieceY, rotX, rotY, dir, board);
 	}
+
 }

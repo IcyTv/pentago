@@ -29,7 +29,7 @@ public class Main extends WindowManager {
 		DisplayManager.createDisplay();
 		Constants.state = Constants.STATE.GAME;
 		Main scene = new Main();
-		scene.toScene(0);
+		scene.toMenu(0);
 		DisplayManager.closeDisplay();
 	}
 }

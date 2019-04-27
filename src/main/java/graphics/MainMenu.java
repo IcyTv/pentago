@@ -21,7 +21,7 @@ public class MainMenu extends Menu {
 	public MainMenu(WindowManager manager) {
 		super(manager);
 		
-		controller = new MenuController(manager);
+		controller = new MenuController(manager, this);
 	}
 
 	@Override
@@ -44,7 +44,8 @@ public class MainMenu extends Menu {
 
 	@Override
 	public void cleanUp() {
-		// TODO Auto-generated method stub
+		text.setText("");
+		cont.setText("");
 		
 	}
 

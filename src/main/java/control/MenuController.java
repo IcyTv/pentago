@@ -5,14 +5,17 @@ import core.event.Callback;
 import core.event.CallbackStackInterruption;
 import core.event.Event;
 import core.event.KeyEvent;
+import core.gui.Menu;
 import core.inputs.Keyboard;
 
 public class MenuController implements Callback {
 
 	private WindowManager manager;
+	private Menu menu;
 	
-	public MenuController(WindowManager manager) {
+	public MenuController(WindowManager manager, Menu menu) {
 		this.manager = manager;
+		this.menu = menu;
 	}
 	
 	@Override
@@ -25,6 +28,7 @@ public class MenuController implements Callback {
 	public void invoke(KeyEvent e) {
 
 		if(Keyboard.toCharacter(e.getKey()) == "ENTER") {
+			menu.stop();
 			manager.toScene(0);
 		} else {
 			System.out.println(Keyboard.toCharacter(e.getKey()));

@@ -33,4 +33,8 @@ public class TranspositionTable {
 		return false;
 	}
 	
+	public boolean depthExists(int depth) {
+		return table.containsKey(depth);
+	}
+	
 }

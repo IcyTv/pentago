@@ -1,6 +1,5 @@
 package strategy;
 
-import java.util.Arrays;
 import java.util.BitSet;
 
 import model.Board;
@@ -11,7 +10,7 @@ public class Strategy {
 
 	private int MAXDEPTH;
 	public static final int SCOREMULTIPLIER = 10;
-	public static final int DEPTH = 1;
+	public static final int DEPTH = 2;
 
 	private Board board;
 	private Turn bestTurn;
@@ -25,6 +24,8 @@ public class Strategy {
 		this.ownNumber = ownNumber - 1;
 		this.board = board;
 		this.bestTurn = null;
+		
+		
 		if(board != null) {
 			this.currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
 		}
@@ -47,7 +48,7 @@ public class Strategy {
 			for (int j = 0; j < currentState.getBSize(); j++) {
 				if (!currentState.emptyBitSet(i, j)) {
 					System.out.println(i + " " + j + " is not empty");
-					if (currentState.get(i, j).get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
+					if (currentState.get(i, j).equals(ownPiece)) {
 						System.out.println("Mein Piece auf " + i + ", " + j);
 					} else {
 						System.out.println("Gegner Piece auf " + i + ", " + j);
@@ -231,6 +232,7 @@ public class Strategy {
 			return -2000; // Unentschieden hat die Wertung 0
 		} else if (depth >= MAXDEPTH) // Abbruch, wenn der Bot zu tief im Baum ist
 		{
+			
 			return staticEvaluation((depth - ownNumber) % amountOfPlayers == 0); // Der Bot bewertet die momentane Lage
 		}
 
@@ -259,10 +261,11 @@ public class Strategy {
 								boolean rotDir = rot > 0;
 
 								if (empty) {
-									int num = depth % amountOfPlayers;
-									for (int k = 0; k < amountOfPlayers; k++) {
-										currentState.set(x, y, num == k, k);
-									}
+//									int num = depth % amountOfPlayers;
+//									for (int k = 0; k < amountOfPlayers; k++) {
+//										currentState.set(x, y, num == k, k);
+//									}
+									currentState.set(x, y, ownNumber);
 									currentState.rotate(rotX, rotY, rotDir);
 									eval = alphaBeta(depth + 1, !maximizingPlayer, alpha, beta);
 									if (depth == ownNumber) {
@@ -270,9 +273,10 @@ public class Strategy {
 									}
 
 									currentState.rotate(rotX, rotY, !rotDir);
-									for (int k = 0; k < amountOfPlayers; k++) {
-										currentState.set(x, y, false, k);
-									}
+//									for (int k = 0; k < amountOfPlayers; k++) {
+//										currentState.set(x, y, false, k);
+//									}
+									currentState.set(x, y, false, ownNumber);
 									maxEval = Math.max(eval, maxEval);
 									alpha = Math.max(alpha, maxEval);
 									if (beta <= alpha) {
@@ -318,9 +322,10 @@ public class Strategy {
 								if (empty) {
 									// boolean[] codedPiece = new boolean[amountOfPlayers];
 									int num = depth % amountOfPlayers;
-									for (int k = 0; k < amountOfPlayers; k++) {
-										currentState.set(x, y, num == k, k);
-									}
+//									for (int k = 0; k < amountOfPlayers; k++) {
+//										currentState.set(x, y, num == k, k);
+//									}
+									currentState.set(x, y, num);
 									currentState.rotate(rotX, rotY, rotDir);
 
 									boolean nextPlayerMaximizingPlayer = (((depth + 1 - ownNumber)
@@ -331,9 +336,10 @@ public class Strategy {
 									}
 
 									currentState.rotate(rotX, rotY, !rotDir);
-									for (int k = 0; k < amountOfPlayers; k++) {
-										currentState.set(x, y, false, k);
-									}
+//									for (int k = 0; k < amountOfPlayers; k++) {
+//										currentState.set(x, y, false, k);
+//									}
+									currentState.set(x, y, false, num);
 									minEval = Math.min(eval, minEval);
 									beta = Math.min(beta, minEval);
 									if (beta <= alpha) {
