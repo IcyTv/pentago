@@ -27,9 +27,9 @@ public class Main extends WindowManager {
 
 		System.setProperty("org.lwjgl.util.Debug", "true");
 		DisplayManager.createDisplay();
-		Constants.state = Constants.STATE.GAME;
+		Constants.state = Constants.STATE.MENU;
 		Main scene = new Main();
-		scene.toMenu(0);
+		scene.toScene(0);
 		DisplayManager.closeDisplay();
 	}
 }

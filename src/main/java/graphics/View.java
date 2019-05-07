@@ -1,12 +1,15 @@
 package graphics;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import control.Controller;
 import control.CustomEvent;
+import core.Constants;
 import core.Constants.COLOR;
 import core.Scene;
 import core.WindowManager;
@@ -19,6 +22,8 @@ import core.event.CallbackStackInterruption;
 import core.event.Queue;
 import core.font.FontType;
 import core.font.GUIText;
+import core.font.TextMaster;
+import core.gui.GUI;
 import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
@@ -33,7 +38,7 @@ import tools.Maths;
  */
 public class View extends Scene {
 	private static final int FPS_REFRESH_RATE = 20;
-	
+
 	private float distance = 2;
 	private int[] currentPanel;
 	private EntityGroup<EntityGroup<Entity>> board;
@@ -43,14 +48,19 @@ public class View extends Scene {
 	private int fpsCounter;
 	private Queue queue;
 
+	private GUIText mtext;
+	private GUIText mcont;
+
+	private List<GUI> guis;
+
 	private Controller controller;
-	
+
 	/**
 	 * Simple Constructor calling Super.
 	 */
 	public View(WindowManager manager) {
 		super(manager);
-		master = new Gamemaster(9, 3, 2, new boolean[] { true, false });
+		master = new Gamemaster(9, 3, 4, new boolean[] { true, true, true, true });
 		queue = new Queue();
 		controller = new Controller(this);
 	}
@@ -59,7 +69,7 @@ public class View extends Scene {
 		FontType font = new FontType(Loader.loadTexture("fonts/segoeUI"), new File("res/fonts/segoeUI.fnt"));
 		text = new GUIText("This is some text!", 3f, font, new Vector2f(0f, 0f), 1f, true);
 		text.setColor(1, 1, 1);
-		
+
 		fps = new GUIText("", 2f, font, new Vector2f(0, 0), 1, false);
 		fps.setColor(1, 0, 0);
 
@@ -112,100 +122,131 @@ public class View extends Scene {
 
 		// picker = new MousePicker(camera, );
 
+		// Menu init
+		mtext = new GUIText("Pentago", 3f, font, new Vector2f(0f, 0f), 1f, true);
+		mtext.setColor(1, 1, 1);
+
+		mcont = new GUIText("Press [Enter] to continue!", 3f, font, new Vector2f(0f, 0.75f), 1f, true);
+		mcont.setColor(1, 1, 1);
+
+		guis = new ArrayList<GUI>();
+
+		guis.add(new GUI("gui/black", new Vector2f(0, 0), new Vector2f(1, 1)));
+
 	}
 
 	@Override
 	public void tickGame() {
-		super.camera.move();
-		if(fpsCounter++ >= FPS_REFRESH_RATE) {	
-			fps.setText("" + (int)(1/DisplayManager.getFrameTimeSeconds()));
-			fpsCounter = 0;
-		}
-		if (!queue.isEmpty()) {
-			try {
-				queue.poll().invoke(new CustomEvent(this));
-			} catch (CallbackStackInterruption e) {
-				e.printStackTrace();
+		if (Constants.state == Constants.STATE.MENU) {
+			// GUI.render(guiElements);
+			if (!text.getText().equals("")) {
+				text.setText("");
+				mtext.setText("Pentago");
+				mcont.setText("Press [Enter] to continue!");
+				guis.get(0).setHidden(false);
 			}
-		}
-
-		if (currentPanel != null) {
-			int pX = currentPanel[0];
-			int pY = currentPanel[1];
-
-			for (int i = 0; i < master.getPSize(); i++) {
-				for (int n = 0; n < master.getPSize(); n++) {
-					int x = pX * master.getPSize() + i;
-					int y = pY * master.getPSize() + n;
-					board.getEntity(y * master.getBSize() + x).getEntity(0).setColor(COLOR.GREEN);
+			GUI.render(guis);
+			TextMaster.render();
+			DisplayManager.updateDisplay();
+		} else {
+			if (!mtext.getText().equals("")) {
+				mtext.setText("");
+				guis.get(0).setHidden(true);
+			}
+			if (!mcont.getText().equals("")) {
+				mcont.setText("");
+			}
+			super.camera.move();
+			if (fpsCounter++ >= FPS_REFRESH_RATE) {
+				fps.setText("" + (int) (1 / DisplayManager.getFrameTimeSeconds()));
+				fpsCounter = 0;
+			}
+			if (!queue.isEmpty()) {
+				try {
+					queue.poll().invoke(new CustomEvent(this));
+				} catch (CallbackStackInterruption e) {
+					e.printStackTrace();
 				}
 			}
-		}
 
-		for (int i = 0; i < master.getBSize(); i++) {
-			for (int n = 0; n < master.getBSize(); n++) {
-				if (master.get(i, n) != null) {
-					Entity ball = board.getEntity(i + n * master.getBSize()).getEntity(1);
-					ball.setHidden(false);
-					ball.setColor(master.get(i, n).getColor());
-				} else {
-					board.getEntity(i + n * master.getBSize()).getEntity(1).setHidden(true);
+			if (currentPanel != null) {
+				int pX = currentPanel[0];
+				int pY = currentPanel[1];
+
+				for (int i = 0; i < master.getPSize(); i++) {
+					for (int n = 0; n < master.getPSize(); n++) {
+						int x = pX * master.getPSize() + i;
+						int y = pY * master.getPSize() + n;
+						board.getEntity(y * master.getBSize() + x).getEntity(0).setColor(COLOR.GREEN);
+					}
 				}
 			}
-		}
 
-		if (!text.getText().equals("Place a piece!") && master.currentTurnIsPlaceTurn() && !master.won()) {
-			switch (master.getCurrentPlayer().getColor()) {
-			case RED:
-				text.setColor(1, 0, 0);
-				break;
-			case GREEN:
-				text.setColor(0, 1, 0);
-				break;
-			case BLUE:
-				text.setColor(0, 0, 1);
-				break;
-			case PURPLE:
-				text.setColor(1, 0, 1);
-				break;
+			for (int i = 0; i < master.getBSize(); i++) {
+				for (int n = 0; n < master.getBSize(); n++) {
+					if (master.get(i, n) != null) {
+						Entity ball = board.getEntity(i + n * master.getBSize()).getEntity(1);
+						ball.setHidden(false);
+						ball.setColor(master.get(i, n).getColor());
+					} else {
+						board.getEntity(i + n * master.getBSize()).getEntity(1).setHidden(true);
+					}
+				}
 			}
-			text.setText("Place a piece!");
-		} else if (!text.getText().equals("Turn a panel!") && !master.currentTurnIsPlaceTurn() && !master.won()) {
-			switch (master.getCurrentPlayer().getColor()) {
-			case RED:
-				text.setColor(1, 0, 0);
-				break;
-			case GREEN:
-				text.setColor(0, 1, 0);
-				break;
-			case BLUE:
-				text.setColor(0, 0, 1);
-				break;
-			case PURPLE:
-				text.setColor(1, 0, 1);
-				break;
-			}
-			text.setText("Turn a panel!");
-		} else if (master.won() && !text.getText().equals("Won!")) {
-			switch (master.getWinner().getColor()) {
-			case RED:
-				text.setColor(1, 0, 0);
-				break;
-			case GREEN:
-				text.setColor(0, 1, 0);
-				break;
-			case BLUE:
-				text.setColor(0, 0, 1);
-				break;
-			case PURPLE:
-				text.setColor(1, 0, 1);
-				break;
-			}
-			text.setText(master.getWinner().getName() + " has won!");
-		}
 
-		Light.sort(super.lights, super.camera);
-		super.render();
+			if (!text.getText().equals("Place a piece!") && master.currentTurnIsPlaceTurn() && !master.won()) {
+				switch (master.getCurrentPlayer().getColor()) {
+				case RED:
+					text.setColor(1, 0, 0);
+					break;
+				case GREEN:
+					text.setColor(0, 1, 0);
+					break;
+				case BLUE:
+					text.setColor(0, 0, 1);
+					break;
+				case PURPLE:
+					text.setColor(1, 0, 1);
+					break;
+				}
+				text.setText("Place a piece!");
+			} else if (!text.getText().equals("Turn a panel!") && !master.currentTurnIsPlaceTurn() && !master.won()) {
+				switch (master.getCurrentPlayer().getColor()) {
+				case RED:
+					text.setColor(1, 0, 0);
+					break;
+				case GREEN:
+					text.setColor(0, 1, 0);
+					break;
+				case BLUE:
+					text.setColor(0, 0, 1);
+					break;
+				case PURPLE:
+					text.setColor(1, 0, 1);
+					break;
+				}
+				text.setText("Turn a panel!");
+			} else if (master.won() && !text.getText().equals("Won!")) {
+				switch (master.getWinner().getColor()) {
+				case RED:
+					text.setColor(1, 0, 0);
+					break;
+				case GREEN:
+					text.setColor(0, 1, 0);
+					break;
+				case BLUE:
+					text.setColor(0, 0, 1);
+					break;
+				case PURPLE:
+					text.setColor(1, 0, 1);
+					break;
+				}
+				text.setText(master.getWinner().getName() + " has won!");
+			}
+
+			Light.sort(super.lights, super.camera);
+			super.render();
+		}
 
 	}
 
@@ -243,7 +284,7 @@ public class View extends Scene {
 	public Queue getQueue() {
 		return queue;
 	}
-	
+
 	public Controller getController() {
 		return controller;
 	}
