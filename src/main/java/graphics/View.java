@@ -8,8 +8,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import control.Controller;
-import control.CustomEvent;
-import core.Constants;
+import control.MenuController;
 import core.Constants.COLOR;
 import core.Scene;
 import core.WindowManager;
@@ -18,17 +17,15 @@ import core.entities.Camera;
 import core.entities.Entity;
 import core.entities.EntityGroup;
 import core.entities.Light;
-import core.event.CallbackStackInterruption;
 import core.event.Queue;
 import core.font.FontType;
 import core.font.GUIText;
-import core.font.TextMaster;
-import core.gui.GUI;
+import core.gui.Button;
+import core.gui.GUIImage;
 import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
 import core.models.TexturedModel;
-import core.renderEngine.DisplayManager;
 import core.textures.ModelTexture;
 import model.Gamemaster;
 import tools.Maths;
@@ -51,12 +48,15 @@ public class View extends Scene {
 	private GUIText mtext;
 	private GUIText mcont;
 
-	private List<GUI> guis;
+	private List<GUIImage> guis;
 
 	private Controller controller;
+	private MenuController menuController;
+
+	private Button button;
 
 	/**
-	 * Simple Constructor calling Super.
+	 * Simple Constructor calling Super.c
 	 */
 	public View(WindowManager manager) {
 		super(manager);
@@ -129,9 +129,14 @@ public class View extends Scene {
 		mcont = new GUIText("Press [Enter] to continue!", 3f, font, new Vector2f(0f, 0.75f), 1f, true);
 		mcont.setColor(1, 1, 1);
 
-		guis = new ArrayList<GUI>();
+		guis = new ArrayList<GUIImage>();
 
-		guis.add(new GUI("gui/black", new Vector2f(0, 0), new Vector2f(1, 1)));
+		guis.add(new GUIImage("gui/black", new Vector2f(0, 0), new Vector2f(1, 1)));
+
+		button = new Button("Test", 10, 10, 10, 10);
+
+		menuController = new MenuController();
+		addCallback(menuController);
 
 	}
 
@@ -145,7 +150,8 @@ public class View extends Scene {
 				mcont.setText("Press [Enter] to continue!");
 				guis.get(0).setHidden(false);
 			}
-			GUI.render(guis);
+			guis.addAll(button.getGuiElement().getImages());
+			GUIImage.render(guis);
 			TextMaster.render();
 			DisplayManager.updateDisplay();
 		} else {
@@ -236,10 +242,10 @@ public class View extends Scene {
 					break;
 				case BLUE:
 					text.setColor(0, 0, 1);
-					break;
-				case PURPLE:
-					text.setColor(1, 0, 1);
-					break;
+					break;new Button("Test", )
+				case PURPLnew Button("Test", )
+					text.snew Button("Test", )
+					break;new Button("Test", )
 				}
 				text.setText(master.getWinner().getName() + " has won!");
 			}

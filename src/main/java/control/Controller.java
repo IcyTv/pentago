@@ -34,51 +34,45 @@ public class Controller implements Callback {
 		boolean press = ev.getAction() == GLFW.GLFW_PRESS;
 
 		if (press) {
-			if (Constants.state == Constants.STATE.MENU) {
-				if (Keyboard.toCharacter(ev.getKey()).equals("ENTER")) {
-					Constants.state = Constants.STATE.GAME;
-				}
-			} else if (Constants.state == Constants.STATE.GAME) {
 
-				if (!view.getMaster().getCurrentPlayer().isHuman()) {
-					return;
-				}
-				if (Keyboard.toCharacter(ev.getKey()) == "ESC") {
-					Constants.state = Constants.STATE.MENU;
-				}
+			if (!view.getMaster().getCurrentPlayer().isHuman()) {
+				return;
+			}
+			if (Keyboard.toCharacter(ev.getKey()) == "ESC") {
+				Constants.state = Constants.STATE.MENU;
+			}
 
-				if (view.getMaster().won()) {
-					return;
-				}
-				switch (Keyboard.toCharacter(ev.getKey())) {
-				case "NUM_1":
-					doTurn(6);
-					break;
-				case "NUM_2":
-					doTurn(7);
-					break;
-				case "NUM_3":
-					doTurn(8);
-					break;
-				case "NUM_4":
-					doTurn(3);
-					break;
-				case "NUM_5":
-					doTurn(4);
-					break;
-				case "NUM_6":
-					doTurn(5);
-					break;
-				case "NUM_7":
-					doTurn(0);
-					break;
-				case "NUM_8":
-					doTurn(1);
-					break;
-				case "NUM_9":
-					doTurn(2);
-					break;
-				}
+			if (view.getMaster().won()) {
+				return;
+			}
+			switch (Keyboard.toCharacter(ev.getKey())) {
+			case "NUM_1":
+				doTurn(6);
+				break;
+			case "NUM_2":
+				doTurn(7);
+				break;
+			case "NUM_3":
+				doTurn(8);
+				break;
+			case "NUM_4":
+				doTurn(3);
+				break;
+			case "NUM_5":
+				doTurn(4);
+				break;
+			case "NUM_6":
+				doTurn(5);
+				break;
+			case "NUM_7":
+				doTurn(0);
+				break;
+			case "NUM_8":
+				doTurn(1);
+				break;
+			case "NUM_9":
+				doTurn(2);
+				break;
 			}
 		}
 	}
@@ -136,8 +130,7 @@ public class Controller implements Callback {
 
 	@Override
 	public int priority() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 2;
 	}
 
 }

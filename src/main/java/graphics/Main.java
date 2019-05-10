@@ -8,14 +8,10 @@ import core.renderEngine.DisplayManager;
 
 public class Main extends WindowManager {
 
-	private MainMenu menu;
 	private View view;
 
 	public Main() {
-		menu = new MainMenu(this);
 		view = new View(this);
-
-		super.menus.add(menu);
 		super.scenes.add(view);
 		System.out.println(super.scenes);
 	}
