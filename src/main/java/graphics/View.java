@@ -8,7 +8,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import control.Controller;
+import control.CustomEvent;
 import control.MenuController;
+import core.Constants;
 import core.Constants.COLOR;
 import core.Scene;
 import core.WindowManager;
@@ -17,15 +19,18 @@ import core.entities.Camera;
 import core.entities.Entity;
 import core.entities.EntityGroup;
 import core.entities.Light;
+import core.event.CallbackStackInterruption;
 import core.event.Queue;
 import core.font.FontType;
 import core.font.GUIText;
+import core.font.TextMaster;
 import core.gui.Button;
 import core.gui.GUIImage;
 import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
 import core.models.TexturedModel;
+import core.renderEngine.DisplayManager;
 import core.textures.ModelTexture;
 import model.Gamemaster;
 import tools.Maths;
@@ -233,7 +238,7 @@ public class View extends Scene {
 				}
 				text.setText("Turn a panel!");
 			} else if (master.won() && !text.getText().equals("Won!")) {
-				switch (master.getWinner().getColor()) {
+				switch (master.getCurrentPlayer().getColor()) {
 				case RED:
 					text.setColor(1, 0, 0);
 					break;
@@ -242,10 +247,10 @@ public class View extends Scene {
 					break;
 				case BLUE:
 					text.setColor(0, 0, 1);
-					break;new Button("Test", )
-				case PURPLnew Button("Test", )
-					text.snew Button("Test", )
-					break;new Button("Test", )
+					break;
+				case PURPLE:
+					text.setColor(1, 0, 1);
+					break;
 				}
 				text.setText(master.getWinner().getName() + " has won!");
 			}
