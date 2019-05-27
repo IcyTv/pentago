@@ -55,9 +55,11 @@ public class View extends Scene {
 	
 	private Controller controller;
 	private MenuController menuController;
-
+	
 	/**
-	 * Constructor
+	 * Constructor for View Class
+	 * 
+	 * @param manager theoretically used for switching windows. NOT IMPLEMENTED
 	 */
 	public View(WindowManager manager) {
 		super(manager);
@@ -277,18 +279,30 @@ public class View extends Scene {
 		return master;
 	}
 
+	/**
+	 * @return Current panel location
+	 */
 	public int[] getCurrentPanel() {
 		return currentPanel;
 	}
 
+	/**
+	 * @param cP current panel location (format: int[]{x, y})
+	 */
 	public void setCurrentPanel(int[] cP) {
 		currentPanel = cP;
 	}
 
+	/**
+	 * @return current Queue
+	 */
 	public Queue getQueue() {
 		return queue;
 	}
 
+	/**
+	 * @return controller
+	 */
 	public Controller getController() {
 		return controller;
 	}

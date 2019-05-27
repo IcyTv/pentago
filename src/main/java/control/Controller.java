@@ -31,6 +31,10 @@ public class Controller implements Callback {
 
 	public void invoke(KeyEvent ev) throws CallbackStackInterruption {
 
+		if (!view.getMaster().getCurrentPlayer().isHuman()) {
+			return;
+		}
+
 		boolean press = ev.getAction() == GLFW.GLFW_PRESS;
 
 		if (press) {
@@ -89,9 +93,9 @@ public class Controller implements Callback {
 			if (master.currentTurnIsPlaceTurn()) {
 				int x = currentPanel[0] * master.getPSize() + numKey % master.getPSize();
 				int y = currentPanel[1] * master.getPSize() + numKey / master.getPSize();
-				master.placePiece(x, y);
-				view.resetBoardColor();
-				view.setCurrentPanel(null);
+					master.placePiece(x, y);
+					view.resetBoardColor();
+					view.setCurrentPanel(null);
 			} else {
 				if (numKey == 3) {
 					master.rotPanel(currentPanel[0], currentPanel[1], true);

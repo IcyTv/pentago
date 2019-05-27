@@ -12,9 +12,10 @@ public class CompTurn implements Runnable {
 	private View view;
 	private int numToRun;
 
-	public CompTurn(View view) {
+	public CompTurn(View view, int numToRun) {
 		super();
 		this.view = view;
+		this.numToRun = numToRun;
 	}
 
 	@Override
@@ -22,26 +23,30 @@ public class CompTurn implements Runnable {
 
 		System.out.println("Running computer computation");
 
-		Computer c = (Computer) view.getMaster().getCurrentPlayer();
-		Turn turn = c.getTurn();
+		for (int i = 0; i < numToRun; i++) {
 
-		view.getQueue().put(new Callback() {
-			@Override
-			public void invoke(Event e) throws CallbackStackInterruption {
-				CustomEvent ce = (CustomEvent) e;
+			Computer c = (Computer) view.getMaster().getCurrentPlayer();
+
+			Turn turn = c.getTurn();
+
+			view.getQueue().put(new Callback() {
+
+				@Override
+				public void invoke(Event e) throws CallbackStackInterruption {
+					CustomEvent ce = (CustomEvent) e;
+
 					ce.getView().getMaster().playRound(turn);
 					ce.getView().getMaster().getQueue().nextPlayer();
-					if(!ce.getView().getMaster().getCurrentPlayer().isHuman()) {
-						ce.getView().getController().playRoundComp();
-					}
-			}
+				}
 
-			@Override
-			public int priority() {
-				return 0;
-			}
-		});
+				@Override
+				public int priority() {
+					return 0;
+				}
+
+			});
+
+		}
 
 	}
-
 }

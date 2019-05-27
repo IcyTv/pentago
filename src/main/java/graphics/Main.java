@@ -10,12 +10,22 @@ public class Main extends WindowManager {
 
 	private View view;
 
+	/**
+	 * Main Class
+	 */
 	public Main() {
 		view = new View(this);
 		super.scenes.add(view);
 		System.out.println(super.scenes);
 	}
 
+	/**
+	 * Main Method
+	 * 
+	 * @param args
+	 * @throws SecurityException
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws SecurityException, IOException {
 
 		// RUN CONFIG FOR DEBUGGING PURPOSES:

@@ -1,6 +1,7 @@
 package strategy;
 
 import java.util.BitSet;
+import java.util.Random;
 
 import model.Board;
 import model.Piece;
@@ -8,23 +9,61 @@ import model.Turn;
 
 public class Strategy {
 
-	private int MAXDEPTH;
-	public static final int SCOREMULTIPLIER = 10;
-	public static final int DEPTH = 2;
+	/**
+	 * Diese Klasse ist sozusagen das Gehirn des Computers. Jeder Zug, den der Computer macht, wurde durch den Aufruf der 
+	 * <code> alphaBeta(int depth, boolean maximizingPlayer, int alpha, int beta) </code> Methode generiert. 
+	 * Die Klasse erstellt einen Baum, der alle möglichen Spielzustände bis zur Tiefe <code> DEPTH </code> speichert. 
+	 * Aus diesem Baum wird dann der beste Spielzug rausgesucht, die durch die Methode
+	 * <code> staticEvaluation(boolean maximizing </code> bewertet wurden. Der Algorithmus, der Findung des besten
+	 * Spielzugs zu Grunde liegt ist der sogenannte Min-Max-Algorithmus. Dieser ist zusätzlich modifiziert durch das
+	 * sogenannte Alpha-Beta-Pruning. Somit ist der Algorithmus schneller. Die Methode <code> staticEvaluation(boolean maximizing) </code>
+	 * bewertet die Spielzüge je nach dem wie viele Spielsteine verbunden sind. Je mehr verbunden sind desto besser, falls
+	 * es sich um die eigenen Spielsteine handelt oder desto schlechter, falls es sich um gegnerische Spielsteine handelt.
+	 * Es wird mit einem <code> BitBoard </code> gearbeitet. Das eigentliche Board wird durch Abfolgen von bits codiert, damit
+	 * die Findung des besten Spielzugs schneller erfolgen kann. Je nach dem welches Bit true ist, resembliert diese Bitfolge
+	 * den Spielstein eines Spielers.
+	 * 
+	 * Beispiel: false, true, false, false
+	 * Dieser Spielstein wurde von Spieler 2 gelegt.
+	 * 
+	 * Beispiel: false, false, false, true
+	 * Dieser Spielstein wurde von Spieler 4 gelegt.
+	 * 
+	 * Beispiel: false, false, false, false
+	 * Dieses Spielfeld ist frei.
+	 */
+	
+	private int             MAXDEPTH;                   //Maximale Tiefe bis die der Bot sucht (ownNumber mit einkalkuliert)
+	public static final int SCOREMULTIPLIER = 10;       //Um wie viel der Score bei der static evaluation multipliziert wird bei aufeinanderfolgenden Pieces
+	public static final int DEPTH = 1;                  //Maximale absolute Tiefe bis die der Bot sucht
 
-	private Board board;
-	private Turn bestTurn;
-	private int amountOfPlayers;
-	private int ownNumber;
-	private BitSet ownPiece;
-	private BitBoard currentState;
-
+	private Board    board;            //Kennt-Beziehung zum Board
+	private Turn     bestTurn;         //Hier wird der beste gefundene Turn nach dem Aufruf von alphaBeta(int,boolean,int,int) gespeichert
+	private int      amountOfPlayers;  //Speichert die Anzahl der Spieler im Spiel
+	private int      ownNumber;        //ownNumber speichert die Platzierung in der Zugreihenfolge (Spieler 1 ownNumber = 1, Spieler 2 ownNumber = 2, ...)
+	private BitSet   ownPiece;         //Speichert das eigene Piece, aber in der kodierten Form (Erleichtert vieles)
+	private BitBoard currentState;     //Dieses Objekt repräsentiert das Board, aber in kodierter Form
+	private Random   r;                //Random Objekt, damit zur Not zufällige Züge generiert werden können
+	
+	private int highestEvalYet;        //Speichert den größten gefundenen value eines Zugs, damit wirklich der BESTE Zug gefunden werden kann        
+	
+	/**
+	 * Dies ist der Konstruktor der Klasse. Es werden lediglich die Attribute initialisiert.
+	 * 
+	 * @param board ist das Spielbrett
+	 * @param amountOfPlayers ist die Anzahl der Spieler, die im Spiel spielen
+	 * @param ownNumber ist die Platzierung im Spiel, also der wie vielte Spieler man ist (Spieler 1, Spieler 2, Spieler 3, ...)
+	 */
 	public Strategy(Board board, int amountOfPlayers, int ownNumber) {
+		
+		//Initialisierung der Attribute
+		this.highestEvalYet = Integer.MIN_VALUE;
 		this.amountOfPlayers = amountOfPlayers;
 		this.ownNumber = ownNumber - 1;
 		this.board = board;
 		this.bestTurn = null;
-		
+		this.MAXDEPTH = DEPTH + ownNumber;
+		this.r = new Random();
 		
 		if(board != null) {
 			this.currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
@@ -34,75 +73,67 @@ public class Strategy {
 		for (int i = 0; i < ownPiece.size(); i++) {
 			ownPiece.set(i, (i + 1 == ownNumber));
 		}
-
-		this.MAXDEPTH = DEPTH + ownNumber;
 	}
 	
-	
+	/**
+	 * Diese Methode bezweckt, dass man den bestmöglichen Zug finden kann, wenn man
+	 * <code> DEPTH </code> Züge weit vorrausschaut. <code> DEPTH </code> ist die 
+	 * maximale Anzahl an Zügen, die der Computer vorrausschauen kann.
+	 * 
+	 * @return den bestmöglichen Zug, der gefunden wurde
+	 */
 	public Turn findBestTurn() {
+		
 		if(board != null) {		
-			encode();
+			encode();         //Das Board wird kodiert und in <code> currentState </code> gespeichert
 		}
-		//System.out.println(".");
-		for (int i = 0; i < currentState.getBSize(); i++) {
-			for (int j = 0; j < currentState.getBSize(); j++) {
-				if (!currentState.emptyBitSet(i, j)) {
-					System.out.println(i + " " + j + " is not empty");
-					if (currentState.get(i, j).equals(ownPiece)) {
-						System.out.println("Mein Piece auf " + i + ", " + j);
-					} else {
-						System.out.println("Gegner Piece auf " + i + ", " + j);
-					}
-				}
-			}
-		}
-		alphaBeta(ownNumber, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
-		Turn temp = bestTurn;
-		bestTurn = null;
-		if(board != null) {
-			currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);
-		}
-		return temp;
-	}
 
+		alphaBeta(ownNumber, true, Integer.MIN_VALUE, Integer.MAX_VALUE);    //Jetzt wird versucht, den bestmöglichen Zug zu finden
+		
+		if(board != null) {
+			currentState = new BitBoard(board.getBSize(), board.getPSize(), amountOfPlayers);          //Das kodierte Board wird zurückgesetzt
+		}
+		highestEvalYet = Integer.MIN_VALUE;          //Der value vom besten Zug wird zurückgesetzt
+		
+		return bestTurn;     //Der beste Zug wird zurückgegeben
+	}
+	
+	/**
+	 * Ein Zustand des Boards wird mit "herkömmlichen" Methoden bewertet.
+	 * Es wird geschaut wie viele Steine in einer Reihe sind
+	 * 
+	 * @param maximizing ist eine boolean, die aussagt, ob man bewerten soll wie der maximierende oder der minimierende Spieler
+	 * @return eine Zahl, die die Wertung des Spielstands darstellen soll
+	 */
 	private int staticEvaluation(boolean maximizing) {
 		int boardSize = currentState.getBSize();
-		int score[][] = new int[boardSize][boardSize];
+		int endEval = 0;
 
 		for (int x = 0; x < boardSize; x++) {
 			for (int y = 0; y < boardSize; y++) {
-				score[x][y] += horizontalBitAlignment(x, y);
-				score[x][y] += verticalBitAlignment(x, y);
-				score[x][y] += upLeftBitAlignment(x, y);
-				score[x][y] += upRightBitAlignment(x, y);
+				endEval += horizontalBitAlignment(x, y);
+				endEval += verticalBitAlignment(x, y);
+				endEval += upLeftBitAlignment(x, y);
+				endEval += upRightBitAlignment(x, y);
 			}
 		}
-
-		if (maximizing) {
-			int max = Integer.MIN_VALUE;
-			for (int x = 0; x < boardSize; x++) {
-				for (int y = 0; y < boardSize; y++) {
-					max = Math.max(max, score[x][y]);
-				}
-			}
-			return max;
-		} else {
-			int min = Integer.MAX_VALUE;
-			for (int x = 0; x < boardSize; x++) {
-				for (int y = 0; y < boardSize; y++) {
-					min = Math.min(min, score[x][y]);
-				}
-			}
-			return min;
-		}
+		return endEval;
 	}
-
+	
+	/**
+	 * Es wird geschaut, wie viele Steine in einer horizontalen Reihe angeordnet sind, von einem bestimmten Feld aus.
+	 * Horizontal bedeutet hier: Alle Steine, die rechts vom Feld sind.
+	 * 
+	 * @param x Koordinate des Spielfelds
+	 * @param y Koordinate des Spielfelds
+	 * @return Wertung
+	 */
 	private int horizontalBitAlignment(int x, int y) {
 		int score = 1;
 		BitSet pieceOfReference = currentState.get(x, y);
 
 		if (!currentState.emptyBitSet(x, y)) {
-			for (int i = 0; i < 4 && x + i < currentState.getBSize(); i++) {
+			for (int i = 0; i < 5 && x + i < currentState.getBSize(); i++) {
 				if (currentState.get(x + i, y) == pieceOfReference) {
 					score *= SCOREMULTIPLIER;
 				}
@@ -111,18 +142,26 @@ public class Strategy {
 			return 0;
 		}
 
-		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
+		if (!pieceOfReference.equals(ownPiece)) {
 			score *= -1;
 		}
 		return score;
 	}
-
+	
+	/**
+	 * Es wird geschaut, wie viele Steine in einer vertikalen Reihe angeordnet sind, von einem bestimmten Feld aus.
+	 * Vertikal bedeutet hier: Alle Steine, die oben vom Feld sind.
+	 * 
+	 * @param x Koordinate des Spielfelds
+	 * @param y Koordinate des Spielfelds
+	 * @return Wertung
+	 */
 	private int verticalBitAlignment(int x, int y) {
 		int score = 1;
 		BitSet pieceOfReference = currentState.get(x, y);
 
 		if (!currentState.emptyBitSet(x, y)) {
-			for (int i = 0; i < 4 && y + i < currentState.getBSize(); i++) {
+			for (int i = 0; i < 5 && y + i < currentState.getBSize(); i++) {
 				if (currentState.get(x, y + i) == pieceOfReference) {
 					score *= SCOREMULTIPLIER;
 				}
@@ -131,18 +170,26 @@ public class Strategy {
 			return 0;
 		}
 
-		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
+		if (!pieceOfReference.equals(ownPiece)) {
 			score *= -1;
 		}
 		return score;
 	}
-
+	
+	/**
+	 * Es wird geschaut, wie viele Steine in einer diagonalen Reihe angeordnet sind, von einem bestimmten Feld aus.
+	 * Diagonal bedeutet hier: Alle Steine, die oben-links vom Feld sind.
+	 * 
+	 * @param x Koordinate des Spielfelds
+	 * @param y Koordinate des Spielfelds
+	 * @return Wertung
+	 */
 	private int upLeftBitAlignment(int x, int y) {
 		int score = 1;
 		BitSet pieceOfReference = currentState.get(x, y);
 
 		if (!currentState.emptyBitSet(x, y)) {
-			for (int i = 0; i < 4 && x - i > -1 && y + i < currentState.getBSize(); i++) {
+			for (int i = 0; i < 5 && x - i > -1 && y + i < currentState.getBSize(); i++) {
 				if (currentState.get(x - i, y + i) == pieceOfReference) {
 					score *= SCOREMULTIPLIER;
 				}
@@ -151,18 +198,26 @@ public class Strategy {
 			return 0;
 		}
 
-		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
+		if (!pieceOfReference.equals(ownPiece)) {
 			score *= -1;
 		}
 		return score;
 	}
 
+	/**
+	 * Es wird geschaut, wie viele Steine in einer diagonalen Reihe angeordnet sind, von einem bestimmten Feld aus.
+	 * Diagonal bedeutet hier: Alle Steine, die oben-rechts vom Feld sind.
+	 * 
+	 * @param x Koordinate des Spielfelds
+	 * @param y Koordinate des Spielfelds
+	 * @return Wertung
+	 */
 	private int upRightBitAlignment(int x, int y) {
 		int score = 1;
 		BitSet pieceOfReference = currentState.get(x, y);
 
 		if (!currentState.emptyBitSet(x, y)) {
-			for (int i = 0; i < 4 && x + i < currentState.getBSize() && y + i < currentState.getBSize(); i++) {
+			for (int i = 0; i < 5 && x + i < currentState.getBSize() && y + i < currentState.getBSize(); i++) {
 				if (currentState.get(x + i, y + i) == pieceOfReference) {
 					score *= SCOREMULTIPLIER;
 				}
@@ -171,206 +226,195 @@ public class Strategy {
 			return 0;
 		}
 
-		if (pieceOfReference.get(ownNumber - 1) == ownPiece.get(ownNumber - 1)) {
+		if (!pieceOfReference.equals(ownPiece)) {
 			score *= -1;
 		}
 		return score;
 	}
 
+	/**
+	 * Das Board wird kodiert in eine Reihe von Bits. Die Regeln der Kodierung stehen in der Klassenbeschreibung geschrieben.
+	 */
 	private void encode() {
 
-		for (int x = 0; x < currentState.getBSize(); x++) // BitSet Array wird befüllt
+		for (int x = 0; x < currentState.getBSize(); x++) // BitSet Array wird befÃ¼llt
 		{
 			for (int y = 0; y < currentState.getBSize(); y++) {
 				Piece realPiece = board.get(x, y); // Chip im Board im Platz (Es wird durch das Board durchiteriert)
 				//boolean codedPiece[] = new boolean[amountOfPlayers]; // Array in dem der Wert der Stelle codiert wird
 
-				if (realPiece != null) // Gibt es überhaupt einen Chip im Board an dieser spezifischen Stelle?
+				if (realPiece != null) // Gibt es Ã¼berhaupt einen Chip im Board an dieser spezifischen Stelle?
 				{
-					System.out.println("PlayerNumber " + (realPiece.getPlayer().getNumber() - 1));
-					currentState.set(x, y, realPiece.getPlayer().getNumber() - 1);
+					currentState.set(x, y, true, realPiece.getPlayer().getNumber() - 1);
 				}
 			}
 		}
 	}
-
-	private void findHighestScoreAndSaveBestTurn(int[][][][][] scores) {
-		System.out.println("");
-		int max = Integer.MIN_VALUE;
-		for (int x = 0; x < scores.length; x++) {
-			for (int y = 0; y < scores[x].length; y++) {
-				for (int rotX = 0; rotX < scores[x][y].length; rotX++) {
-					for (int rotY = 0; rotY < scores[x][y][rotX].length; rotY++) {
-						for (int dir = 0; dir < scores[x][y][rotX][rotY].length; dir++) {
-							// System.out.println(scores[x][y][rotX][rotY][dir]);
-							if (scores[x][y][rotX][rotY][dir] > max && scores[x][y][rotX][rotY][dir] != -1) {
-								max = scores[x][y][rotX][rotY][dir];
-								this.bestTurn = new Turn(x, y, rotX, rotY, (dir > 0), this.board);
-							}
-						}
-					}
-				}
-			}
+	
+	/**
+	 * Ein zufälliger Zug wird erstellt. Fungiert als Tiebreaker sozusagen.
+	 */
+	private void generateRandomTurn()
+	{
+		try
+		{
+			bestTurn = new Turn(r.nextInt(board.getBSize()), r.nextInt(board.getBSize()), r.nextInt(board.getPSize()), r.nextInt(board.getPSize()), r.nextBoolean(), board);
+		}
+		catch (IllegalStateException e)  //Error wird gethrowed, wenn der Zug, der oben instanziiert wird invalide ist
+		{
+			generateRandomTurn();  //Dann wird eben nach einem neuen Zug gesucht...
 		}
 	}
-
+	
+	/**
+	 * Der Kern dieser Klasse. Eine Elaboration der Methode ist in der Klassenbeschreibung zu finden.
+	 * 
+	 * @param depth ist die Tiefe, in die sich der Bot grad befindet
+	 * @param maximizingPlayer ist eine Boolean, die aussagt, ob aus der Sicht des maximierenden oder minimierenden Spieler bewertet werden soll.
+	 * @param alpha unterer Grenzwert der höchstmöglichen Wertung
+	 * @param beta oberer Grenzwert der höchstmöglichen Wertung
+	 * @return eine Integer, die im Kontext irrelevant ist
+	 */
 	public int alphaBeta(int depth, boolean maximizingPlayer, int alpha, int beta) {
-		// System.out.println(depth);
-		// System.out.println(depth-ownNumber);
-		if (currentState.won()) // Man soll nicht weiter probieren, wenn das Board schon gewonnen ist...
+		if (depth >= MAXDEPTH) // Abbruch, wenn der Bot zu tief im Baum ist
 		{
-			if (maximizingPlayer) {
-				//System.out.println("lost");
-				return Integer.MIN_VALUE + 1; // Gegner hat gewonnen, weil das Board gewonnen war, als der Bot am Zug
-												// war
-			} else {
-				//System.out.println("won");
-				return Integer.MAX_VALUE - 1; // Bot hat gewonnen, weil das Board gewonnen war, als der Gegner am Zug war
-			}
-		} else if (currentState.draw()) {
-			// System.out.println("draw");
-			return -2000; // Unentschieden hat die Wertung 0
-		} else if (depth >= MAXDEPTH) // Abbruch, wenn der Bot zu tief im Baum ist
-		{
-			
 			return staticEvaluation((depth - ownNumber) % amountOfPlayers == 0); // Der Bot bewertet die momentane Lage
 		}
-
-		// Index 1: Panelzeile
-		// Index 2: Panelspalte
-		// Index 3: Zeile im jeweiligen Panel
-		// Index 4: Spalte im jeweiligen Panel
-		// Index 5: Links oder Rechtsrotation
-		int scores[][][][][] = null;
-		int amountOfPanels = currentState.getBSize() / currentState.getPSize();
-		int boardSize = currentState.getBSize();
-		if (depth == ownNumber) {
-			scores = new int[boardSize][boardSize][amountOfPanels][amountOfPanels][2];
+		else if (currentState.won()) // Man soll nicht weiter probieren, wenn das Board schon gewonnen ist...
+		{
+			if (maximizingPlayer) {
+				if (depth == ownNumber)
+				{
+					generateRandomTurn();  //Noch wurde kein Turn festgelegt, also würde sonst null zurückgegeben werden
+				}
+				return -100000; // Gegner hat gewonnen, weil das Board gewonnen war, als der Bot am Zug
+												// war
+			} else {
+				if (depth == ownNumber)
+				{
+					generateRandomTurn();   //Noch wurde kein Turn festgelegt, also würde sonst null zurückgegeben werden
+				}
+				return 100000; // Bot hat gewonnen, weil das Board gewonnen war, als der Gegner am Zug war
+			}
+		} else if (currentState.draw()) {
+			return 0; // Unentschieden hat die Wertung 0
 		}
-		int maxEval, minEval, eval;
+		int amountOfPanels = currentState.getBSize() / currentState.getPSize();       //Dient der Überschaulichkeit
+		int boardSize = currentState.getBSize();       //Dient der Überschaulichkeit
+		int maxEval, minEval, eval;   //Die Hauptvariablen der Methode
+		
 		if (maximizingPlayer) // Je nach dem ob der maximierende Spieler dran ist, werden Variablen anders
 								// gespeichert...
 		{
 			maxEval = Integer.MIN_VALUE; // Man geht vom schlimmsten Fall aus
-			for (int x = 0; x < boardSize; x++) {
-				for (int y = 0; y < boardSize; y++) {
-					boolean empty = currentState.emptyBitSet(x, y);
-					for (int rotX = 0; rotX < amountOfPanels; rotX++) {
-						for (int rotY = 0; rotY < amountOfPanels; rotY++) {
-							for (int rot = 0; rot < 2; rot++) {
-								boolean rotDir = rot > 0;
+			for (int x = 0; x < boardSize; x++) {      //Man iteriert durch alle Spalten
+				for (int y = 0; y < boardSize; y++) {       //Man iteriert durch alle Zeilen
+					boolean empty = currentState.emptyBitSet(x, y);        //Man schaut, ob das Spielfeld belegt ist oder nicht und speichert dann das als boolean ab
+					for (int rotX = 0; rotX < amountOfPanels; rotX++) {          //Panelspalten werden durchiteriert
+						for (int rotY = 0; rotY < amountOfPanels; rotY++) {          //Panelzeilen werden durchiteriert
+							for (int rot = 0; rot < 2; rot++) {        //Entweder man rotiert nach links oder rechts
+								boolean rotDir = rot > 0;        //0 = false, 1 = true
 
-								if (empty) {
-//									int num = depth % amountOfPlayers;
-//									for (int k = 0; k < amountOfPlayers; k++) {
-//										currentState.set(x, y, num == k, k);
-//									}
-									currentState.set(x, y, ownNumber);
-									currentState.rotate(rotX, rotY, rotDir);
-									eval = alphaBeta(depth + 1, !maximizingPlayer, alpha, beta);
-									if (depth == ownNumber) {
-										scores[x][y][rotX][rotY][rot] = eval;
+								if (empty) {      //Wenn das Spielfeld belegt ist, kann man ja sonst gar nicht die Position bewerten
+									currentState.set(x, y, true, ownNumber);          //Stein wird im kodierten Board gesetzt
+									currentState.rotate(rotX, rotY, rotDir);       //Kodiertes Board wird gedreht
+									
+									eval = alphaBeta(depth + 1, !maximizingPlayer, alpha, beta);     //Rekursionsaufruf
+									
+									if (depth == ownNumber && eval > highestEvalYet) {         //Wenn man in der ersten Inkarnationstiefe ist und dieser Zug der beste ist
+										Turn lastBestTurn = bestTurn;
+										try
+										{
+											this.bestTurn = new Turn(x, y, rotX, rotY, rotDir, board);   //Dann ist das der beste Zug, der bis jetzt gefunden wurde
+											highestEvalYet = eval;      //Das ist dann auch der neue beste score, der gefunden wurde
+										}
+										catch (IllegalArgumentException e)
+										{
+											e.printStackTrace();
+											bestTurn = lastBestTurn;
+										}
 									}
 
-									currentState.rotate(rotX, rotY, !rotDir);
-//									for (int k = 0; k < amountOfPlayers; k++) {
-//										currentState.set(x, y, false, k);
-//									}
-									currentState.set(x, y, false, ownNumber);
-									maxEval = Math.max(eval, maxEval);
-									alpha = Math.max(alpha, maxEval);
-									if (beta <= alpha) {
+									currentState.rotate(rotX, rotY, !rotDir);      //Kodiertes Board wird zurückgedreht
+									currentState.set(x, y, false, ownNumber);      //Stein wird weggenommen
+									maxEval = Math.max(eval, maxEval);      //Ist der jetzt evaluierte Zug der bestgefundene Zug?
+									alpha = Math.max(alpha, maxEval);       //Untergrenze wird neu justiert
+									if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 										break;
-									}
-								} else {
-									if (depth == ownNumber) {
-										scores[x][y][rotX][rotY][rot] = -1;
 									}
 								}
 							}
-							if (beta <= alpha) {
+							if (beta <= alpha) {        //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 								break;
 							}
 						}
-						if (beta <= alpha) {
+						if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 							break;
 						}
 					}
-					if (beta <= alpha) {
+					if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 						break;
 					}
 				}
-				if (beta <= alpha) {
+				if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 					break;
 				}
 			}
-
-			if (depth == ownNumber) {
-				findHighestScoreAndSaveBestTurn(scores);
-			}
-			return maxEval;
+			return maxEval;        //Der beste score wird zurückgegeben
 		} else {
 			minEval = Integer.MAX_VALUE; // Man geht vom schlimmsten Fall aus
-			for (int x = 0; x < boardSize; x++) {
-				for (int y = 0; y < boardSize; y++) {
-					boolean empty = currentState.emptyBitSet(x, y);
-					for (int rotX = 0; rotX < amountOfPanels; rotX++) {
-						for (int rotY = 0; rotY < amountOfPanels; rotY++) {
-							for (int rot = 0; rot < 2; rot++) {
-								boolean rotDir = rot > 0;
+			for (int x = 0; x < boardSize; x++) {      //Man iteriert durch alle Spalten
+				for (int y = 0; y < boardSize; y++) {       //Man iteriert durch alle Zeilen
+					boolean empty = currentState.emptyBitSet(x, y);        //Man schaut, ob das Spielfeld belegt ist oder nicht und speichert dann das als boolean ab
+					int num = depth % amountOfPlayers;      //Der wie vielte Spieler ist denn dran?
+					
+					for (int rotX = 0; rotX < amountOfPanels; rotX++) {          //Panelspalten werden durchiteriert
+						for (int rotY = 0; rotY < amountOfPanels; rotY++) {          //Panelzeilen werden durchiteriert
+							for (int rot = 0; rot < 2; rot++) {        //Entweder man rotiert nach links oder rechts
+								boolean rotDir = rot > 0;        //0 = false, 1 = true
 
-								if (empty) {
-									// boolean[] codedPiece = new boolean[amountOfPlayers];
-									int num = depth % amountOfPlayers;
-//									for (int k = 0; k < amountOfPlayers; k++) {
-//										currentState.set(x, y, num == k, k);
-//									}
-									currentState.set(x, y, num);
-									currentState.rotate(rotX, rotY, rotDir);
+								if (empty) {      //Wenn das Spielfeld belegt ist, kann man ja sonst gar nicht die Position bewerten
+									currentState.set(x, y, true, num);          //Stein vom Spieler wird im kodierten Board gesetzt
+									currentState.rotate(rotX, rotY, rotDir);       //Kodiertes Board wird gedreht
 
 									boolean nextPlayerMaximizingPlayer = (((depth + 1 - ownNumber)
-											% amountOfPlayers) == 0);
-									eval = alphaBeta(depth + 1, nextPlayerMaximizingPlayer, alpha, beta);
-									if (depth == 0) {
-										scores[x][y][rotX][rotY][rot] = eval;
-									}
+											% amountOfPlayers) == 0);  //Ist der nächste Spieler wieder der Computer?
+									eval = alphaBeta(depth + 1, nextPlayerMaximizingPlayer, alpha, beta);     //Rekursionsaufruf
 
-									currentState.rotate(rotX, rotY, !rotDir);
-//									for (int k = 0; k < amountOfPlayers; k++) {
-//										currentState.set(x, y, false, k);
-//									}
-									currentState.set(x, y, false, num);
-									minEval = Math.min(eval, minEval);
-									beta = Math.min(beta, minEval);
-									if (beta <= alpha) {
+									currentState.rotate(rotX, rotY, !rotDir);      //Kodiertes Board wird zurückgedreht
+									currentState.set(x, y, false, num);      //Stein wird weggenommen
+									minEval = Math.min(eval, minEval);      //Ist der jetzt evaluierte Zug der schlechteste Zug für den maximierenden Spieler?
+									beta = Math.min(beta, minEval);       //Obergrenze wird neu justiert
+									if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 										break;
-									}
-								} else {
-									if (depth == 0) {
-										scores[x][y][rotX][rotY][rot] = -1;
 									}
 								}
 							}
-							if (beta <= alpha) {
+							if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 								break;
 							}
 						}
-						if (beta <= alpha) {
+						if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 							break;
 						}
 					}
-					if (beta <= alpha) {
+					if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 						break;
 					}
 				}
-				if (beta <= alpha) {
+				if (beta <= alpha) {       //Abbruchbedingung: Zug ist niemals besser als der Zug im vorherigen Baum
 					break;
 				}
 			}
-			return minEval;
+			return minEval;        //Der für den maximierenden Spieler schlechtesten score wird zurückgegeben
 		}
 	}
 	
+	/**
+	 * Set-Methode des Attributs <code> currentState </code>
+	 * 
+	 * @param currentState ist das BitBoard, das das alte BitBoard ersetzen soll
+	 */
 	public void setCurrentState(BitBoard currentState) {
 		this.currentState = currentState;
 	}
