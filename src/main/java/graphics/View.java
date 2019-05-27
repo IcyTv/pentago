@@ -8,7 +8,9 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import control.Controller;
+import control.CustomEvent;
 import control.MenuController;
+import core.Constants;
 import core.Constants.COLOR;
 import core.Scene;
 import core.WindowManager;
@@ -17,46 +19,45 @@ import core.entities.Camera;
 import core.entities.Entity;
 import core.entities.EntityGroup;
 import core.entities.Light;
+import core.event.CallbackStackInterruption;
 import core.event.Queue;
+import core.font.Font;
 import core.font.FontType;
 import core.font.GUIText;
+import core.font.TextMaster;
 import core.gui.Button;
+import core.gui.GUI;
 import core.gui.GUIImage;
 import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
 import core.models.TexturedModel;
+import core.renderEngine.DisplayManager;
 import core.textures.ModelTexture;
 import model.Gamemaster;
 import tools.Maths;
 
 /**
- * Scene for testing engine.
+ * Class for displaying the game
  */
 public class View extends Scene {
+	//Interval for the fps counter refresh
 	private static final int FPS_REFRESH_RATE = 20;
 
 	private float distance = 2;
 	private int[] currentPanel;
 	private EntityGroup<EntityGroup<Entity>> board;
 	private Gamemaster master;
-	private GUIText text;
-	private GUIText fps;
 	private int fpsCounter;
 	private Queue queue;
 
-	private GUIText mtext;
-	private GUIText mcont;
-
-	private List<GUIImage> guis;
-
+	private Menu menu;
+	
 	private Controller controller;
 	private MenuController menuController;
 
-	private Button button;
-
 	/**
-	 * Simple Constructor calling Super.c
+	 * Constructor
 	 */
 	public View(WindowManager manager) {
 		super(manager);
@@ -65,14 +66,22 @@ public class View extends Scene {
 		controller = new Controller(this);
 	}
 
+	/*
+	 * Initialize function, called just before starting the game. Used to load assets
+	 */
 	public void init() {
 		FontType font = new FontType(Loader.loadTexture("fonts/segoeUI"), new File("res/fonts/segoeUI.fnt"));
-		text = new GUIText("This is some text!", 3f, font, new Vector2f(0f, 0f), 1f, true);
+		
+		GUIText text = new GUIText("This is some text!", 3f, font, new Vector2f(0f, 0f), 1f, true);
 		text.setColor(1, 1, 1);
+		
+		mainGUI.addText(text);
 
-		fps = new GUIText("", 2f, font, new Vector2f(0, 0), 1, false);
+		GUIText fps = new GUIText("", 2f, font, new Vector2f(0, 0), 1, false);
 		fps.setColor(1, 0, 0);
 
+		mainGUI.addText(fps);
+		
 		Light sun = new Light(new Vector3f(0, 1000, -700), Maths.rgbToVector(255, 255, 255));
 		super.lights.add(sun);
 		AudioMaster.setDistanceAttenuationMethod(1, true);
@@ -120,51 +129,28 @@ public class View extends Scene {
 
 		addCallback(controller);
 
-		// picker = new MousePicker(camera, );
 
 		// Menu init
-		mtext = new GUIText("Pentago", 3f, font, new Vector2f(0f, 0f), 1f, true);
-		mtext.setColor(1, 1, 1);
-
-		mcont = new GUIText("Press [Enter] to continue!", 3f, font, new Vector2f(0f, 0.75f), 1f, true);
-		mcont.setColor(1, 1, 1);
-
-		guis = new ArrayList<GUIImage>();
-
-		guis.add(new GUIImage("gui/black", new Vector2f(0, 0), new Vector2f(1, 1)));
-
-		button = new Button("Test", 10, 10, 10, 10);
-
+		
+		menu = new Menu(this);
+		
+		
 		menuController = new MenuController();
 		addCallback(menuController);
 
 	}
 
+	/*
+	 * Function that gets called every tick `(Constants.TICK_RATE)` per second 
+	 */
 	@Override
 	public void tickGame() {
 		if (Constants.state == Constants.STATE.MENU) {
-			// GUI.render(guiElements);
-			if (!text.getText().equals("")) {
-				text.setText("");
-				mtext.setText("Pentago");
-				mcont.setText("Press [Enter] to continue!");
-				guis.get(0).setHidden(false);
-			}
-			guis.addAll(button.getGuiElement().getImages());
-			GUIImage.render(guis);
-			TextMaster.render();
-			DisplayManager.updateDisplay();
+			menu.renderCurrent();
 		} else {
-			if (!mtext.getText().equals("")) {
-				mtext.setText("");
-				guis.get(0).setHidden(true);
-			}
-			if (!mcont.getText().equals("")) {
-				mcont.setText("");
-			}
 			super.camera.move();
 			if (fpsCounter++ >= FPS_REFRESH_RATE) {
-				fps.setText("" + (int) (1 / DisplayManager.getFrameTimeSeconds()));
+				mainGUI.getTexts().get(1).setText("" + (int) (1 / DisplayManager.getFrameTimeSeconds()));
 				fpsCounter = 0;
 			}
 			if (!queue.isEmpty()) {
@@ -200,6 +186,8 @@ public class View extends Scene {
 				}
 			}
 
+			GUIText text = mainGUI.getTexts().get(0);
+			
 			if (!text.getText().equals("Place a piece!") && master.currentTurnIsPlaceTurn() && !master.won()) {
 				switch (master.getCurrentPlayer().getColor()) {
 				case RED:
@@ -233,7 +221,7 @@ public class View extends Scene {
 				}
 				text.setText("Turn a panel!");
 			} else if (master.won() && !text.getText().equals("Won!")) {
-				switch (master.getWinner().getColor()) {
+				switch (master.getCurrentPlayer().getColor()) {
 				case RED:
 					text.setColor(1, 0, 0);
 					break;
@@ -242,10 +230,10 @@ public class View extends Scene {
 					break;
 				case BLUE:
 					text.setColor(0, 0, 1);
-					break;new Button("Test", )
-				case PURPLnew Button("Test", )
-					text.snew Button("Test", )
-					break;new Button("Test", )
+					break;
+				case PURPLE:
+					text.setColor(1, 0, 1);
+					break;
 				}
 				text.setText(master.getWinner().getName() + " has won!");
 			}
@@ -256,6 +244,9 @@ public class View extends Scene {
 
 	}
 
+	/*
+	 * Used to reset Colors of the board
+	 */
 	public void resetBoardColor() {
 		if (currentPanel != null) {
 			int pX = currentPanel[0];
@@ -271,10 +262,17 @@ public class View extends Scene {
 		}
 	}
 
+	/*
+	 * Used for cleaning up. Called after closing game
+	 */
 	@Override
 	public void cleanUp() {
 	}
 
+	/*
+	 * Returns gamemaster
+	 * @return master
+	 */
 	public Gamemaster getMaster() {
 		return master;
 	}

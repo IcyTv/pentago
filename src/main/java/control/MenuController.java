@@ -2,18 +2,27 @@ package control;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import core.Constants;
+import core.event.ButtonEvent;
 import core.event.Callback;
 import core.event.CallbackStackInterruption;
 import core.event.Event;
 import core.event.KeyEvent;
 import core.event.MouseClickedEvent;
+import core.gui.Button;
 import core.inputs.Keyboard;
 
 public class MenuController implements Callback {
 
+	public List<Button> buttons;
+	
 	public MenuController() {
 		super();
+		
+		buttons = new ArrayList<Button>();
 	}
 
 	@Override
@@ -39,9 +48,20 @@ public class MenuController implements Callback {
 	}
 
 	public void invoke(MouseClickedEvent e) {
-		if (e.getAction() == GLFW_PRESS) {
-			System.out.println(e.getX() + " " + e.getY());
+		for(Button b: buttons) {
+			System.out.println(b.clicked(e.getX(), e.getY()));
+			if(b.clicked(e.getX(), e.getY())) {
+				b.onClick(new ButtonEvent(e.getAction() == GLFW_PRESS));
+			}
 		}
+	}
+	
+	public void addButton(Button b) {
+		buttons.add(b);
+	}
+	
+	public void removeButton(int x) {
+		buttons.remove(x);
 	}
 
 	@Override
