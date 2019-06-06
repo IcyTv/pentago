@@ -1,17 +1,47 @@
 apply plugin: "java"
 apply plugin: "eclipse"
 
+
+version = '1.0'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
    	implementation project(":pentago-engine")
-	String version = "3.2.1";
+	String lversion = "3.2.1";
 	String[] append = ["", ":natives-linux", ":natives-windows"];
 	for(String app: append){
-		implementation 'org.lwjgl:lwjgl-glfw:' + version + app
+		implementation 'org.lwjgl:lwjgl-glfw:' + lversion + app
 	}
     
 	implementation 'org.joml:joml-jdk8:1.9.12'
+}
+
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'graphics.Main'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+ }
+
+
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'main.java.graphics.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

@@ -62,7 +62,7 @@ public class Turn {
     
     //STATIC METHODS
     public static boolean valid(Board board, int x, int y) {
-    	return board.get(x, y) != null;
+    	return board.get(x, y) == null;
     }
 
 }

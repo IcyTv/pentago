@@ -7,46 +7,63 @@ import graphics.View;
 import model.Computer;
 import model.Turn;
 
+/**
+ * The Class CompTurn.
+ * 
+ * Used for multithreading of AI turn generation
+ */
 public class CompTurn implements Runnable {
 
+	/** The view.
+	 * 
+	 *  Used to make changes to the board
+	 */
 	private View view;
-	private int numToRun;
 
-	public CompTurn(View view, int numToRun) {
+	/**
+	 * Instantiates a new comp turn.
+	 *
+	 * @param view View for making changes to the Board
+	 */
+	public CompTurn(View view) {
 		super();
 		this.view = view;
-		this.numToRun = numToRun;
 	}
 
+	/**
+	 * Runs the turn in a new Thread
+	 */
 	@Override
 	public void run() {
 
 		System.out.println("Running computer computation");
 
-		for (int i = 0; i < numToRun; i++) {
+		Computer c = (Computer) view.getMaster().getCurrentPlayer();
 
-			Computer c = (Computer) view.getMaster().getCurrentPlayer();
+		final Turn turn = c.getTurn();
 
-			Turn turn = c.getTurn();
+		view.getQueue().put(new Callback() {
 
-			view.getQueue().put(new Callback() {
+			@Override
+			public void invoke(Event e) throws CallbackStackInterruption {
+				CustomEvent ce = (CustomEvent) e;
 
-				@Override
-				public void invoke(Event e) throws CallbackStackInterruption {
-					CustomEvent ce = (CustomEvent) e;
+				ce.getView().getMaster().playRound(turn);
+				ce.getView().getMaster().getQueue().nextPlayer();
 
-					ce.getView().getMaster().playRound(turn);
-					ce.getView().getMaster().getQueue().nextPlayer();
+				if (!ce.getView().getMaster().getCurrentPlayer().isHuman()) {
+					ce.getView().getController().playRoundComp();
 				}
 
-				@Override
-				public int priority() {
-					return 0;
-				}
+				ce.getView().setCurrentColor();
+			}
 
-			});
+			@Override
+			public int priority() {
+				return 0;
+			}
 
-		}
+		});
 
 	}
 }

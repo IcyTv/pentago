@@ -1,8 +1,6 @@
 package graphics;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -21,13 +19,8 @@ import core.entities.EntityGroup;
 import core.entities.Light;
 import core.event.CallbackStackInterruption;
 import core.event.Queue;
-import core.font.Font;
 import core.font.FontType;
 import core.font.GUIText;
-import core.font.TextMaster;
-import core.gui.Button;
-import core.gui.GUI;
-import core.gui.GUIImage;
 import core.loaders.Loader;
 import core.loaders.OBJFileLoader;
 import core.models.RawModel;
@@ -38,52 +31,77 @@ import model.Gamemaster;
 import tools.Maths;
 
 /**
- * Class for displaying the game
+ * Class for displaying the game.
+ * 
+ * @author IcyTv
  */
 public class View extends Scene {
-	//Interval for the fps counter refresh
+	
+	/** The Constant FPS_REFRESH_RATE
+	 * Interval for the fps counter refresh
+	 */
 	private static final int FPS_REFRESH_RATE = 20;
 
+	/** The distance between panels */
 	private float distance = 2;
+	
+	/** The currently selected panel. */
 	private int[] currentPanel;
+	
+	/** The board. */
 	private EntityGroup<EntityGroup<Entity>> board;
+	
+	/** The gamemaster */
 	private Gamemaster master;
+	
+	/** The fps counter. */
 	private int fpsCounter;
+	
+	/** The queue for polling events */
 	private Queue queue;
 
+	/** The menu. */
 	private Menu menu;
-	
+
+	/** The game controller. */
 	private Controller controller;
-	private MenuController menuController;
 	
+	/** The menu controller. */
+	private MenuController menuController;
+
+	/** Current tutorial stage */
+	private int tutorialStage;
+
 	/**
-	 * Constructor for View Class
-	 * 
+	 * Constructor for View Class.
+	 *
 	 * @param manager theoretically used for switching windows. NOT IMPLEMENTED
 	 */
 	public View(WindowManager manager) {
 		super(manager);
-		master = new Gamemaster(9, 3, 4, new boolean[] { true, true, true, true });
+		master = new Gamemaster(9, 3, 4, new boolean[] { true, false, false, false });
 		queue = new Queue();
 		controller = new Controller(this);
+		tutorialStage = 0;
 	}
 
 	/*
-	 * Initialize function, called just before starting the game. Used to load assets
+	 * Initialize function, called just before starting the game. Used to load
+	 * assets to conserve startup time
 	 */
 	public void init() {
 		FontType font = new FontType(Loader.loadTexture("fonts/segoeUI"), new File("res/fonts/segoeUI.fnt"));
-		
+
 		GUIText text = new GUIText("This is some text!", 3f, font, new Vector2f(0f, 0f), 1f, true);
 		text.setColor(1, 1, 1);
-		
+
 		mainGUI.addText(text);
 
 		GUIText fps = new GUIText("", 2f, font, new Vector2f(0, 0), 1, false);
 		fps.setColor(1, 0, 0);
 
 		mainGUI.addText(fps);
-		
+
 		Light sun = new Light(new Vector3f(0, 1000, -700), Maths.rgbToVector(255, 255, 255));
 		super.lights.add(sun);
 		AudioMaster.setDistanceAttenuationMethod(1, true);
@@ -131,19 +149,18 @@ public class View extends Scene {
 
 		addCallback(controller);
 
-
 		// Menu init
-		
+
 		menu = new Menu(this);
-		
-		
-		menuController = new MenuController();
+
+		menuController = new MenuController(this);
 		addCallback(menuController);
 
 	}
 
+
 	/*
-	 * Function that gets called every tick `(Constants.TICK_RATE)` per second 
+	 * Function that gets called every tick `(Constants.TICK_RATE)` per second
 	 */
 	@Override
 	public void tickGame() {
@@ -189,54 +206,15 @@ public class View extends Scene {
 			}
 
 			GUIText text = mainGUI.getTexts().get(0);
-			
+
 			if (!text.getText().equals("Place a piece!") && master.currentTurnIsPlaceTurn() && !master.won()) {
-				switch (master.getCurrentPlayer().getColor()) {
-				case RED:
-					text.setColor(1, 0, 0);
-					break;
-				case GREEN:
-					text.setColor(0, 1, 0);
-					break;
-				case BLUE:
-					text.setColor(0, 0, 1);
-					break;
-				case PURPLE:
-					text.setColor(1, 0, 1);
-					break;
-				}
+				setCurrentColor();
 				text.setText("Place a piece!");
 			} else if (!text.getText().equals("Turn a panel!") && !master.currentTurnIsPlaceTurn() && !master.won()) {
-				switch (master.getCurrentPlayer().getColor()) {
-				case RED:
-					text.setColor(1, 0, 0);
-					break;
-				case GREEN:
-					text.setColor(0, 1, 0);
-					break;
-				case BLUE:
-					text.setColor(0, 0, 1);
-					break;
-				case PURPLE:
-					text.setColor(1, 0, 1);
-					break;
-				}
+				setCurrentColor();
 				text.setText("Turn a panel!");
 			} else if (master.won() && !text.getText().equals("Won!")) {
-				switch (master.getCurrentPlayer().getColor()) {
-				case RED:
-					text.setColor(1, 0, 0);
-					break;
-				case GREEN:
-					text.setColor(0, 1, 0);
-					break;
-				case BLUE:
-					text.setColor(0, 0, 1);
-					break;
-				case PURPLE:
-					text.setColor(1, 0, 1);
-					break;
-				}
+				setCurrentColor();
 				text.setText(master.getWinner().getName() + " has won!");
 			}
 
@@ -244,6 +222,27 @@ public class View extends Scene {
 			super.render();
 		}
 
+	}
+
+	/**
+	 * Sets the current color.
+	 */
+	public void setCurrentColor() {
+		GUIText text = mainGUI.getTexts().get(0);
+		switch (master.getCurrentPlayer().getColor()) {
+		case RED:
+			text.setColor(1, 0, 0);
+			break;
+		case GREEN:
+			text.setColor(0, 1, 0);
+			break;
+		case BLUE:
+			text.setColor(0, 0, 1);
+			break;
+		case PURPLE:
+			text.setColor(1, 0, 1);
+			break;
+		}
 	}
 
 	/*
@@ -273,6 +272,7 @@ public class View extends Scene {
 
 	/*
 	 * Returns gamemaster
+	 * 
 	 * @return master
 	 */
 	public Gamemaster getMaster() {
@@ -280,6 +280,8 @@ public class View extends Scene {
 	}
 
 	/**
+	 * Gets the current panel.
+	 *
 	 * @return Current panel location
 	 */
 	public int[] getCurrentPanel() {
@@ -287,6 +289,8 @@ public class View extends Scene {
 	}
 
 	/**
+	 * Sets the current panel.
+	 *
 	 * @param cP current panel location (format: int[]{x, y})
 	 */
 	public void setCurrentPanel(int[] cP) {
@@ -294,6 +298,8 @@ public class View extends Scene {
 	}
 
 	/**
+	 * Gets the queue.
+	 *
 	 * @return current Queue
 	 */
 	public Queue getQueue() {
@@ -301,10 +307,33 @@ public class View extends Scene {
 	}
 
 	/**
+	 * Gets the controller.
+	 *
 	 * @return controller
 	 */
 	public Controller getController() {
 		return controller;
+	}
+
+	/**
+	 * Gets the tutorial stage.
+	 *
+	 * @return the tutorial stage
+	 */
+	public int getTutorialStage() {
+		return tutorialStage;
+	}
+
+	/**
+	 * Sets the tutorial stage.
+	 *
+	 * @param stage the new tutorial stage
+	 */
+	public void setTutorialStage(int stage) {
+		tutorialStage = stage;
+		if (tutorialStage != -1) {
+			Constants.state = Constants.STATE.MENU;
+		}
 	}
 
 }

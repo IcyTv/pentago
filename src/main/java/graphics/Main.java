@@ -6,12 +6,16 @@ import core.Constants;
 import core.WindowManager;
 import core.renderEngine.DisplayManager;
 
+/**
+ * The Class Main.
+ */
 public class Main extends WindowManager {
 
+	/** The view. */
 	private View view;
 
 	/**
-	 * Main Class
+	 * Main Class.
 	 */
 	public Main() {
 		view = new View(this);
@@ -20,11 +24,11 @@ public class Main extends WindowManager {
 	}
 
 	/**
-	 * Main Method
-	 * 
-	 * @param args
-	 * @throws SecurityException
-	 * @throws IOException
+	 * Main Method.
+	 *
+	 * @param args the arguments
+	 * @throws SecurityException a security exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws SecurityException, IOException {
 

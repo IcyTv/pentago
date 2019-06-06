@@ -12,25 +12,33 @@ import core.gui.GUIImage;
 import core.loaders.Loader;
 import core.renderEngine.DisplayManager;
 
-/*
-*	Class for storing GUIs
-*/
+/**
+ * The Class Menu.
+ *	Class for storing GUIs
+ */
 public class Menu {
 
-	private int STATE;
+	/** The menu. */
 	private GUI menu;
-	private GUI tutorial1;
-	private GUI tutorial2;
+	
+	/** The tutorial 1. */
+	private GUI tutorial1; //Used for selecting panels
+	
+	/** The tutorial 2. */
+	private GUI tutorial2; //Setting pieces
+	
+	/** The tutorial 3. */
+	private GUI tutorial3; //Rotating Panels
 
+	/** The view. */
 	private View view;
 
 	/**
-	 * Constructor for GUI storage
-	 * 
-	 * @param view
+	 * Constructor for GUI storage.
+	 *
+	 * @param view the view
 	 */
 	public Menu(View view) {
-		STATE = 0;
 
 		this.view = view;
 
@@ -48,16 +56,43 @@ public class Menu {
 
 		menu.addText(mcont);
 
-		// guis.add(new GUIImage("gui/black", new Vector2f(0, 0), new Vector2f(1, 1)));
-
 		menu.addImage("gui/black", new Vector2f(0, 0), new Vector2f(1, 1));
+	
+	
+		tutorial1 = new GUI(new Vector2f(0, 0), new Vector2f(1, 1));
+	
+		GUIText tmp = new GUIText("Use the Numpad to control the game", 3f, font, new Vector2f(0, 0), 1, true);
+		tmp.setColor(0, 0, 0);
+		
+		tutorial1.addText(tmp);
+		
+		tutorial1.addImage("gui/tutorial1", new Vector2f(0, 0), new Vector2f(1, 1));
+		
+		
+		tutorial2 = new GUI(new Vector2f(0, 0), new Vector2f(1, 1));
+		
+		GUIText tmp2 = new GUIText("Use the Numpad to place your piece", 3f, font, new Vector2f(0, 0), 1, true);
+		tmp2.setColor(0, 0, 0);
+		
+		tutorial2.addText(tmp2);
+		
+		tutorial2.addImage("gui/tutorial3", new Vector2f(0, 0), new Vector2f(1, 1));
+		
+		
+		tutorial3 = new GUI(new Vector2f(0, 0), new Vector2f(1, 1));
+		
+		GUIText tmp3 = new GUIText("Use the Numpad 4 or 6 to rotate the board left or right", 3f, font, new Vector2f(0, 0), 1, true);
+		tmp2.setColor(0, 0, 0);
+		
+		tutorial3.addText(tmp3);
+		tutorial3.addImage("gui/tutorial2", new Vector2f(0, 0), new Vector2f(1, 1));
 	}
 
 	/**
-	 * Renders current State GUI
+	 * Renders current GUI.
 	 */
 	public void renderCurrent() {
-		switch (STATE) {
+		switch (view.getTutorialStage()) {
 		case 0:
 			renderMenu();
 			break;
@@ -67,24 +102,45 @@ public class Menu {
 		case 2:
 			renderTutorial2();
 			break;
+		case 3:
+			renderTutorial3();
+			break;
 		}
 	}
 
+	/**
+	 * Render menu.
+	 */
 	public void renderMenu() {
 		GUIImage.render(menu.getImages());
 		TextMaster.render(menu.getRenderMap());
 		DisplayManager.updateDisplay();
 	}
 
+	/**
+	 * Render tutorial 1.
+	 */
 	public void renderTutorial1() {
 		GUIImage.render(tutorial1.getImages());
 		TextMaster.render(tutorial1.getRenderMap());
 		DisplayManager.updateDisplay();
 	}
 
+	/**
+	 * Render tutorial 2.
+	 */
 	public void renderTutorial2() {
 		GUIImage.render(tutorial2.getImages());
 		TextMaster.render(tutorial2.getRenderMap());
+		DisplayManager.updateDisplay();
+	}
+	
+	/**
+	 * Render tutorial 3.
+	 */
+	public void renderTutorial3() {
+		GUIImage.render(tutorial3.getImages());
+		TextMaster.render(tutorial3.getRenderMap());
 		DisplayManager.updateDisplay();
 	}
 
